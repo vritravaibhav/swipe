@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagramclone/Resources/auth_methods.dart';
@@ -5,6 +6,7 @@ import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/screens/signup_screen.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instagramclone/widget/text_field_input.dart';
 
 import '../responsive/mobile_screen_layout.dart';
@@ -30,17 +32,18 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
   }
 
+  //late UserCredential x;
+
   void loginUser() async {
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
     if (res == 'success') {
-      Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) =>const ResponsiveLayout(
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const ResponsiveLayout(
           WebScreenLayout: WebScreenLayout(),
-           MobileScreenLayout: MobileScreenLayout(),
+          MobileScreenLayout: MobileScreenLayout(),
         ),
-        )
-           );
+      ));
     } else {
       showSnackBar(res, context);
     }
@@ -103,6 +106,26 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           const SizedBox(
             height: 12,
+          ),
+          Container(
+            child: Text("or"),
+          ),
+          SizedBox(
+            height: 12,
+          ),
+          InkWell(
+            onTap: () async {
+              await AuthMethods().signInWithGoogle();
+            },
+            child: Container(
+                // color: blueColor,
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: Text("Login with google "),
+                decoration: ShapeDecoration(
+                    color: blueColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ))),
           ),
           Flexible(
             child: Container(),

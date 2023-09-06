@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/utils/utils.dart';
+import 'package:lottie/lottie.dart';
 
 import '../Resources/auth_methods.dart';
 import '../Resources/firestore_methods.dart';
@@ -63,6 +64,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  _selectImage(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text("Yo!!!!!!!"),
+            children: [
+              Lottie.network(
+                  'https://raw.githubusercontent.com/xvrh/lottie-flutter/master/example/assets/Mobilo/A.json'),
+              // SimpleDialogOption(
+              //   padding: const EdgeInsets.all(20),
+              //   child: const Text('Cancel'),
+              //   onPressed: () async {
+              //     Navigator.of(context).pop();
+              //   },
+              // )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -101,75 +123,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    buildStatColumn(postLen, "posts"),
-                                    buildStatColumn(followers, "followers"),
-                                    buildStatColumn(following, "following"),
+                                    // buildStatColumn(postLen, "posts"),
+                                    // buildStatColumn(followers, "followers"),
+                                    // buildStatColumn(following, "following"),
                                   ],
                                 ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  FirebaseAuth.instance.currentUser!.uid ==
-                                          widget.uid
-                                      ? FollowButton(
-                                          text: 'Sign Out',
-                                          backgroundColor:
-                                              mobileBackgroundColor,
-                                          textColor: primaryColor,
-                                          borderColor: Colors.grey,
-                                          function: () async {
-                                            await AuthMethods().signOut();
-                                            Navigator.of(context)
-                                                .pushReplacement(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen(),
-                                              ),
-                                            );
-                                          },
-                                        )
-                                      : isFollowing
-                                          ? FollowButton(
-                                              text: 'Unfollow',
-                                              backgroundColor: Colors.white,
-                                              textColor: Colors.black,
-                                              borderColor: Colors.grey,
-                                              function: () async {
-                                                await FirestoreMethods()
-                                                    .followUser(
-                                                  FirebaseAuth.instance
-                                                      .currentUser!.uid,
-                                                  userData['uid'],
-                                                );
-                                
-                                                setState(() {
-                                                  isFollowing = false;
-                                                  followers--;
-                                                });
-                                              },
-                                            )
-                                          : FollowButton(
-                                              text: 'Follow',
-                                              backgroundColor: Colors.blue,
-                                              textColor: Colors.white,
-                                              borderColor: Colors.blue,
-                                              function: () async {
-                                                await FirestoreMethods()
-                                                    .followUser(
-                                                  FirebaseAuth.instance
-                                                      .currentUser!.uid,
-                                                  userData['uid'],
-                                                );
-                                
-                                                setState(() {
-                                                  isFollowing = true;
-                                                  followers++;
-                                                });
-                                              },
-                                            )
-                                ],
-                              ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    FirebaseAuth.instance.currentUser!.uid ==
+                                            widget.uid
+                                        ? FollowButton(
+                                            text: 'Sign Out',
+                                            backgroundColor:
+                                                mobileBackgroundColor,
+                                            textColor: primaryColor,
+                                            borderColor: Colors.grey,
+                                            function: () async {
+                                              await AuthMethods().signOut();
+                                              Navigator.of(context)
+                                                  .pushReplacement(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginScreen(),
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : isFollowing
+                                            ? FollowButton(
+                                                text: 'Unsend Super Like',
+                                                backgroundColor: Colors.white,
+                                                textColor: Colors.black,
+                                                borderColor: Colors.grey,
+                                                function: () async {
+                                                  bool x =
+                                                      await FirestoreMethods()
+                                                          .followUser(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid,
+                                                    userData['uid'],
+                                                  );
+                                                  if (x) {
+                                                    print("lols");
+                                                    _selectImage(context);
+                                                  }
+
+                                                  setState(() {
+                                                    isFollowing = false;
+                                                    followers--;
+                                                  });
+                                                },
+                                              )
+                                            : FollowButton(
+                                                text: 'Send Super like',
+                                                backgroundColor: Colors.blue,
+                                                textColor: Colors.white,
+                                                borderColor: Colors.blue,
+                                                function: () async {
+                                                  bool x =
+                                                      await FirestoreMethods()
+                                                          .followUser(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid,
+                                                    userData['uid'],
+                                                  );
+                                                  if (x) {
+                                                    print("lols");
+                                                    _selectImage(context);
+                                                  }
+
+                                                  setState(() {
+                                                    isFollowing = true;
+                                                    followers++;
+                                                  });
+                                                },
+                                              )
+                                  ],
+                                ),
                               ],
                             ),
                           ),

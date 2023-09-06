@@ -14,7 +14,8 @@ import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
   final snap;
-  const PostCard({super.key, required this.snap});
+  final bool anon;
+  const PostCard({super.key, required this.snap, required this.anon});
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -44,7 +45,7 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
     return Container(
-      color: mobileBackgroundColor,
+      color: widget.anon ? mobileBackgroundColor : Colors.brown,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
@@ -55,9 +56,14 @@ class _PostCardState extends State<PostCard> {
               children: [
                 CircleAvatar(
                   radius: 16,
-                  backgroundImage: NetworkImage(
-                    widget.snap['profImage'].toString(),
-                  ),
+                  backgroundImage:
+                      //   https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2F0Djl8U5ZaJgPz0PIK9b4c6p4JWz1?alt=media&token=8f408628-e847-4862-ba3e-49d18587b998
+                      widget.anon
+                          ? NetworkImage(
+                              "https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b")
+                          : NetworkImage(
+                              widget.snap['profImage'].toString(),
+                            ),
                 ),
                 Expanded(
                     child: Padding(
@@ -69,50 +75,52 @@ class _PostCardState extends State<PostCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.snap['username'],
+                          widget.anon ? "Anonymous" : widget.snap['username'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         )
                       ]),
                 )),
-                IconButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) => Dialog(
-                                child: ListView(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  shrinkWrap: true,
-                                  children: ['Delete']
-                                      .map((e) => InkWell(
-                                            onTap: () {
-                                              FirestoreMethods().deletePost(
-                                                  widget.snap['postId']);
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
+                widget.anon
+                    ? SizedBox()
+                    : IconButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                    child: ListView(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
+                                      shrinkWrap: true,
+                                      children: ['Delete']
+                                          .map((e) => InkWell(
+                                                onTap: () {
+                                                  FirestoreMethods().deletePost(
+                                                      widget.snap['postId']);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
                                                       vertical: 12,
                                                       horizontal: 16),
-                                              child: Text(e),
-                                            ),
-                                          ))
-                                      .toList(),
-                                ),
-                              ));
-                    },
-                    icon: Icon(Icons.more_vert))
+                                                  child: Text(e),
+                                                ),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ));
+                        },
+                        icon: Icon(Icons.more_vert))
               ],
             ),
           ),
           GestureDetector(
             onDoubleTap: () {
-              FirestoreMethods().likesPost(
-                  widget.snap['postId'], user.uid, widget.snap['likes']);
+              FirestoreMethods().likesPost(widget.snap['postId'], user.uid,
+                  widget.snap['likes'], widget.anon);
               setState(() {
                 isLikeAnimating = true;
               });
@@ -157,8 +165,8 @@ class _PostCardState extends State<PostCard> {
                 isAnimating: widget.snap['likes'].contains(user.uid),
                 child: IconButton(
                   onPressed: () {
-                    FirestoreMethods().likesPost(
-                        widget.snap['postId'], user.uid, widget.snap['likes']);
+                    FirestoreMethods().likesPost(widget.snap['postId'],
+                        user.uid, widget.snap['likes'], widget.anon);
                   },
                   icon: widget.snap['likes'].contains(user.uid)
                       ? const Icon(
@@ -183,18 +191,6 @@ class _PostCardState extends State<PostCard> {
                 },
                 icon: Icon(Icons.comment_outlined),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.send),
-              ),
-              Expanded(
-                  child: Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.bookmark),
-                ),
-              ))
             ],
           ),
           // caption and comments
@@ -222,7 +218,9 @@ class _PostCardState extends State<PostCard> {
                           style: const TextStyle(color: primaryColor),
                           children: [
                             TextSpan(
-                              text: widget.snap['username'],
+                              text: widget.anon
+                                  ? "Anonymous"
+                                  : widget.snap['username'],
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),

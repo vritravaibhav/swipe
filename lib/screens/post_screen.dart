@@ -1,10 +1,13 @@
 //import 'dart:ffi';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as model;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
 import 'package:instagramclone/providers/UserProvider.dart';
+import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -21,15 +24,25 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
   bool isLoading = false;
+  bool uploadScreen = false;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final model.FirebaseAuth _auth = model.FirebaseAuth.instance;
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _tweetController = TextEditingController();
 
-  void postImage(String uid, String username, String profImage) async {
+  void postImage(
+      String uid, String username, String profImage, bool isAnonymous) async {
     setState(() {
       isLoading = true;
     });
     try {
       String res = await FirestoreMethods().uploadPost(
-          _descriptionController.text, _file!, uid, username, profImage);
+          _descriptionController.text,
+          _file!,
+          uid,
+          username,
+          profImage,
+          isAnonymous);
       if (res == "success") {
         setState(() {
           isLoading = false;
@@ -59,7 +72,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 child: const Text('Take a pHOTO'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Uint8List file = await pickImage(
+                  Uint8List? file = await pickImage(
                     ImageSource.camera,
                   );
                   setState(() {
@@ -72,11 +85,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 child: const Text('choose from gallery'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Uint8List file = await pickImage(
+                  Uint8List? file = await pickImage(
                     ImageSource.gallery,
                   );
                   setState(() {
                     _file = file;
+                    if (file != null) {
+                      uploadScreen = true;
+                    }
                   });
                 },
               ),
@@ -94,27 +110,123 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   void clearImage() {
     setState(() {
+      uploadScreen = false;
       _file = null;
     });
+  }
+
+  void anonymoustweet() async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text("Tweet Anonimously"),
+            children: [
+              Container(
+                height: 200,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      textAlignVertical: TextAlignVertical.center,
+                      expands: true,
+                      //keyboardType: TextInputType.,
+                      maxLines: null,
+
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                      controller: _tweetController,
+                      //decoration: InputDecoration(),
+                    ),
+                  ),
+                ),
+              ),
+              TextButton(
+                  onPressed: () async {
+                    FirestoreMethods().uploadTweets(
+                      _tweetController.text,
+                      
+                    );
+                    Navigator.pop(context);
+                    showSnackBar("Successfully Tweeted", context);
+                    _tweetController.clear();
+                  },
+                  child: const Text(
+                    "Tweet",
+                    style: TextStyle(
+                        letterSpacing: Checkbox.width,
+                        fontSize: Checkbox.width),
+                  )),
+            ],
+          );
+        });
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _descriptionController.dispose();
+    // _descriptionController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
-    return _file == null
-        ? Center(
-            child: IconButton(
-                icon: const Icon(Icons.upload),
-                onPressed: () {
-                  _selectImage(context);
-                }),
+    final x = Provider.of<TypeProvdier>(context);
+    return !uploadScreen
+        ?
+        //  Center(
+        //     child: IconButton(
+        //         icon: const Icon(Icons.upload),
+        //         onPressed: () {
+        //           _selectImage(context);
+        //         }),
+        //   )
+        Container(
+            decoration: BoxDecoration(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: InkWell(
+                    onTap: () {
+                      x.isAnonymous = false;
+                      _selectImage(context);
+                    },
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: MediaQuery.of(context).size.width * 1,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage('assets/weetlogo.jpg'.toString()),
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      anonymoustweet();
+                    },
+                    child: Text(
+                      "Tap here for anonymous   tweet",
+                      style: TextStyle(color: Colors.black, fontSize: 23),
+                    ),
+                  ),
+                ),
+                Container(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: InkWell(
+                      onTap: () {
+                        x.isAnonymous = true;
+                        _selectImage(context);
+                      },
+                    ))
+              ],
+            ),
           )
         : Scaffold(
             appBar: AppBar(
@@ -127,8 +239,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
               centerTitle: false,
               actions: [
                 TextButton(
-                    onPressed: () =>
-                        postImage(user.uid, user.username, user.photoUrl),
+                    onPressed: () => postImage(
+                        user.uid, user.username, user.photoUrl, x.isAnonymous),
                     child: const Text(
                       'Post',
                       style: TextStyle(

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instagramclone/Resources/storage_methods.dart';
 import 'package:instagramclone/models/user.dart' as model;
 import 'package:instagramclone/screens/signup_screen.dart';
@@ -16,7 +17,7 @@ class AuthMethods {
     User currentUser = _auth.currentUser!;
     DocumentSnapshot snap =
         await _firestore.collection('users').doc(currentUser.uid).get();
-        return model.User.fromSnap(snap);
+    return model.User.fromSnap(snap);
   }
 
   // ignore: non_constant_identifier_names
@@ -35,7 +36,7 @@ class AuthMethods {
           file.isNotEmpty) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-        print(cred.user!.uid);
+        // print(cred.user!.uid);
 
         String photoUrl = await StorageMethods()
             .uploadImageToStorage('profilePics', file, false);
@@ -48,6 +49,7 @@ class AuthMethods {
             bio: bio,
             followers: [],
             following: []);
+        //var m = user.toJson();
 
         await _firestore
             .collection('users')
@@ -80,7 +82,47 @@ class AuthMethods {
     }
     return res;
   }
-   Future<void> signOut() async {
+
+  Future<void> signOut() async {
     await _auth.signOut();
+    await GoogleSignIn().disconnect();
+   
+  }
+
+  Future<String> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    UserCredential cred =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // String photoUrl = await StorageMethods()
+    //     .uploadImageToStorage('profilePics', file, false);
+
+    User? googlesUser = cred.user;
+    model.User user = model.User(
+        email: googlesUser!.email.toString(),
+        uid: cred.user!.uid,
+        photoUrl: googlesUser.photoURL.toString(),
+        username: googlesUser.displayName.toString(),
+        bio: "Logged in",
+        followers: [],
+        following: []);
+    //var m = user.toJson();
+
+    await _firestore.collection('users').doc(cred.user!.uid).set(user.toJson());
+
+    return "good";
   }
 }
