@@ -64,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  _selectImage(BuildContext context) {
+  onSend(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -98,6 +98,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 userData['username'],
               ),
               centerTitle: false,
+              actions: [IconButton(onPressed: () {
+
+              }, icon: Icon(Icons.edit))],
             ),
             body: ListView(
               children: [
@@ -167,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   );
                                                   if (x) {
                                                     print("lols");
-                                                    _selectImage(context);
+                                                    onSend(context);
                                                   }
 
                                                   setState(() {
@@ -191,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   );
                                                   if (x) {
                                                     print("lols");
-                                                    _selectImage(context);
+                                                    onSend(context);
                                                   }
 
                                                   setState(() {
