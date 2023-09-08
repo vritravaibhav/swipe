@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int following = 0;
   bool isFollowing = false;
   bool isLoading = false;
-
+  TextEditingController _name = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -85,6 +85,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
+  editname(BuildContext context) {
+    //
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Enter your new name"),
+            children: [
+              TextField(
+                controller: _name,
+                decoration: InputDecoration(
+
+                ),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -98,9 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 userData['username'],
               ),
               centerTitle: false,
-              actions: [IconButton(onPressed: () {
-
-              }, icon: Icon(Icons.edit))],
+              actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
             ),
             body: ListView(
               children: [
