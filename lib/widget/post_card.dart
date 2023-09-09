@@ -45,12 +45,12 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
     return Container(
-      color: widget.anon ? mobileBackgroundColor : Colors.brown,
+      color: !widget.anon ? mobileBackgroundColor : Colors.brown,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10)
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10)
                 .copyWith(right: 0),
             child: Row(
               children: [
@@ -76,7 +76,7 @@ class _PostCardState extends State<PostCard> {
                       children: [
                         Text(
                           widget.anon ? "Anonymous" : widget.snap['username'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         )

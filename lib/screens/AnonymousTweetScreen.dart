@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
@@ -72,9 +70,7 @@ class _TweetScreenState extends State<TweetScreen> {
                                 : Colors.white,
                           )),
                       TextButton(
-                          onPressed: () {
-                            
-                          },
+                          onPressed: () {},
                           child:
                               Text("${data["likes"].length.toString()} Likes"))
                     ],

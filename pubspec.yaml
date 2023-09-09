@@ -45,6 +45,7 @@ dependencies:
   lottie: ^2.6.0
   provider: ^6.0.5
   uuid: ^4.0.0
+  cached_network_image: 
 
 dev_dependencies:
   flutter_lints: ^2.0.0
