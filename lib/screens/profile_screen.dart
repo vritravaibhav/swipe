@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -165,13 +166,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            backgroundImage: NetworkImage(
-                              userData['photoUrl'],
-                            ),
-                            radius: 40,
-                          ),
+                          userData['photoUrl'].toString().isNotEmpty
+                              ? ClipOval(
+                                  child: SizedBox(
+                                    height: 80,
+                                    child: CachedNetworkImage(
+                                      imageUrl: userData['photoUrl'],
+                                    ),
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: Colors.blue,
+                                ),
                           Expanded(
                             flex: 1,
                             child: Column(

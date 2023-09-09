@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagramclone/Resources/auth_methods.dart';
@@ -6,7 +5,6 @@ import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/screens/signup_screen.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instagramclone/widget/text_field_input.dart';
 
 import '../responsive/mobile_screen_layout.dart';

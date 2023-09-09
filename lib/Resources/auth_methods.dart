@@ -3,11 +3,9 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instagramclone/Resources/storage_methods.dart';
 import 'package:instagramclone/models/user.dart' as model;
-import 'package:instagramclone/screens/signup_screen.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,28 +23,29 @@ class AuthMethods {
       {required String email,
       required String password,
       required String username,
-      required String bio,
-      required Uint8List file}) async {
+      required String? bio,
+      required Uint8List? file}) async {
     String res = "Some Error occurred";
     try {
-      if (email.isNotEmpty ||
-          password.isNotEmpty ||
-          username.isNotEmpty ||
-          bio.isNotEmpty ||
-          file.isNotEmpty) {
+      if (email.isNotEmpty || password.isNotEmpty || username.isNotEmpty
+          // bio.isNotEmpty ||
+          // file.isNotEmpty
+          ) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         // print(cred.user!.uid);
-
-        String photoUrl = await StorageMethods()
-            .uploadImageToStorage('profilePics', file, false);
+        String photoUrl = "";
+        if (file != null) {
+          photoUrl = await StorageMethods()
+              .uploadImageToStorage('profilePics', file, false);
+        }
 
         model.User user = model.User(
             email: email,
             uid: cred.user!.uid,
             photoUrl: photoUrl,
             username: username,
-            bio: bio,
+            bio: bio!,
             followers: [],
             following: []);
         //var m = user.toJson();
