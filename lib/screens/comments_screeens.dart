@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
@@ -86,9 +87,21 @@ class _CommentsScreenState extends State<CommentsScreen> {
           padding: const EdgeInsets.only(left: 16, right: 8),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(user.photoUrl),
-                radius: 18,
+              ClipOval(
+                child: user.photoUrl.isNotEmpty
+                    ? SizedBox(
+                        height: 36,
+                        width: 36,
+                        child: CachedNetworkImage(
+                          imageUrl: user.photoUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Container(
+                        height: 36,
+                        width: 36,
+                        color: Colors.blue,
+                      ),
               ),
               Expanded(
                 child: Padding(

@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int following = 0;
   bool isFollowing = false;
   bool isLoading = false;
-  TextEditingController _name = TextEditingController();
+  final TextEditingController _name = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -96,9 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               TextField(
                 controller: _name,
-                decoration: InputDecoration(
-
-                ),
+                decoration: InputDecoration(),
               )
             ],
           );
@@ -132,8 +130,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? ClipOval(
                                   child: SizedBox(
                                     height: 80,
+                                    width: 80,
                                     child: CachedNetworkImage(
                                       imageUrl: userData['photoUrl'],
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 )
@@ -241,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Text(
                           userData['username'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -258,7 +258,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                const Divider(),
+                const Divider(
+                  thickness: 3,
+                ),
                 FutureBuilder(
                   future: FirebaseFirestore.instance
                       .collection('posts')
@@ -271,28 +273,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     }
 
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: (snapshot.data! as dynamic).docs.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 1.5,
-                        childAspectRatio: 1,
-                      ),
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot snap =
-                            (snapshot.data! as dynamic).docs[index];
+                    int length = (snapshot.data! as dynamic).docs.length;
 
-                        return Container(
-                          child: Image(
-                            image: NetworkImage(snap['postUrl']),
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      },
-                    );
+                    return length != 0
+                        ? GridView.builder(
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            itemCount: length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 1.5,
+                              childAspectRatio: 1,
+                            ),
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot snap =
+                                  (snapshot.data! as dynamic).docs[index];
+                              return CachedNetworkImage(
+                                imageUrl: snap['postUrl'],
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.2),
+                              child: const Text(
+                                'No post yet...Try it..',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          );
                   },
                 )
               ],

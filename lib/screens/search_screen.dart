@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/screens/profile_screen.dart';
 
 import '../utils/colors.dart';
-import '../utils/global_variable.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -31,7 +31,6 @@ class _SearchScreenState extends State<SearchScreen> {
               setState(() {
                 isShowUsers = true;
               });
-              print(_);
             },
           ),
         ),
@@ -134,7 +133,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     mainAxisSpacing: 4,
                     crossAxisSpacing: 4,
                     repeatPattern: QuiltedGridRepeatPattern.inverted,
-                    pattern: [
+                    pattern: const [
                       QuiltedGridTile(2, 2),
                       QuiltedGridTile(1, 1),
                       QuiltedGridTile(1, 1),
@@ -142,8 +141,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                   ),
                   childrenDelegate: SliverChildBuilderDelegate(
-                    (context, index) => Image.network(
-                        (snapshot.data! as dynamic).docs[index %
+                    (context, index) => CachedNetworkImage(
+                        imageUrl: (snapshot.data! as dynamic).docs[index %
                             (snapshot.data! as dynamic).docs.length]['postUrl'],
                         fit: BoxFit.cover),
                   ),
