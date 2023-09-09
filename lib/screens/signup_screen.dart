@@ -47,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   //lol
   void selectimage() async {
-    Uint8List? v =  await pickImage(ImageSource.gallery);
+    Uint8List? v = await pickImage(ImageSource.gallery);
     if (v != null) {
       setState(() {
         _image = v;
@@ -68,17 +68,15 @@ class _SignupScreenState extends State<SignupScreen> {
     );
     if (res != 'Success') {
       showSnackBar(res, context);
-    }else{
-       Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) =>const ResponsiveLayout(
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const ResponsiveLayout(
           WebScreenLayout: WebScreenLayout(),
-           MobileScreenLayout: MobileScreenLayout(),
+          MobileScreenLayout: MobileScreenLayout(),
         ),
-        )
-           );
-        
+      ));
     }
-  
+
     setState(() {
       _isLoading = false;
     });
@@ -136,7 +134,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
           TextFieldInput(
               textEditingController: _usernameController,
-              hintText: "Enter your username",
+              hintText: "Enter your name",
               textInputType: TextInputType.text),
           SizedBox(
             height: 24,
@@ -164,13 +162,13 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 24,
           ),
           InkWell(
-            onTap:// () {
-            //  if (_image != null) {
+            onTap: // () {
+                //  if (_image != null) {
                 signUpUser,
-          //    } else {
-           //     showSnackBar("please upload picture", context);
-           //   }
-         //   },
+            //    } else {
+            //     showSnackBar("please upload picture", context);
+            //   }
+            //   },
             child: Container(
               child: _isLoading
                   ? Center(

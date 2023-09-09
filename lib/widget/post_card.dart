@@ -12,10 +12,17 @@ import 'package:instagramclone/widget/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/profile_screen.dart';
+
 class PostCard extends StatefulWidget {
   final snap;
   final bool anon;
-  const PostCard({super.key, required this.snap, required this.anon});
+  final bool isOnPop;
+  const PostCard(
+      {super.key,
+      required this.snap,
+      required this.anon,
+      required this.isOnPop});
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -52,69 +59,89 @@ class _PostCardState extends State<PostCard> {
           Container(
             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10)
                 .copyWith(right: 0),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundImage:
-                      //   https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2F0Djl8U5ZaJgPz0PIK9b4c6p4JWz1?alt=media&token=8f408628-e847-4862-ba3e-49d18587b998
-                      widget.anon
-                          ? NetworkImage(
-                              "https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b")
-                          : NetworkImage(
-                              widget.snap['profImage'].toString(),
-                            ),
-                ),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                  ),
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.anon ? "Anonymous" : widget.snap['username'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ]),
-                )),
+            child: InkWell(
+              onTap: () {
                 widget.anon
-                    ? SizedBox()
-                    : IconButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => Dialog(
-                                    child: ListView(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 16,
-                                      ),
-                                      shrinkWrap: true,
-                                      children: ['Delete']
-                                          .map((e) => InkWell(
-                                                onTap: () {
-                                                  FirestoreMethods().deletePost(
-                                                      widget.snap['postId']);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 16),
-                                                  child: Text(e),
-                                                ),
-                                              ))
-                                          .toList(),
-                                    ),
-                                  ));
-                        },
-                        icon: Icon(Icons.more_vert))
-              ],
+                    ? () {}
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                                  uid: widget.snap["uid"],
+                                )),
+                      );
+                print("good");
+              },
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 16,
+                    backgroundImage:
+                        //   https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2F0Djl8U5ZaJgPz0PIK9b4c6p4JWz1?alt=media&token=8f408628-e847-4862-ba3e-49d18587b998
+                        widget.anon
+                            ? NetworkImage(
+                                "https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b")
+                            : NetworkImage(
+                                widget.snap['profImage'].toString(),
+                              ),
+                  ),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                    ),
+                    child: Text(
+                      widget.anon ? "Anonymous" : widget.snap['username'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )),
+                  widget.anon
+                      ? SizedBox()
+                      : user.uid == widget.snap["uid"]
+                          ? IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                          child: ListView(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                            ),
+                                            shrinkWrap: true,
+                                            children: ['Delete']
+                                                .map((e) => InkWell(
+                                                      onTap: () async {
+                                                        await FirestoreMethods()
+                                                            .deletePost(
+                                                                widget.snap[
+                                                                    'postId']);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        widget.isOnPop == true
+                                                            ? Navigator.of(
+                                                                    context)
+                                                                .pop()
+                                                            : () {};
+                                                      },
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 16),
+                                                        child: Text(e),
+                                                      ),
+                                                    ))
+                                                .toList(),
+                                          ),
+                                        ));
+                              },
+                              icon: Icon(Icons.more_vert))
+                          : SizedBox()
+                ],
+              ),
             ),
           ),
           GestureDetector(

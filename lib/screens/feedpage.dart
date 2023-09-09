@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/post_card.dart';
+
 class FeedPage extends StatelessWidget {
   const FeedPage({
     super.key,
@@ -26,6 +27,7 @@ class FeedPage extends StatelessWidget {
           itemBuilder: (context, index) => PostCard(
             snap: snapshot.data!.docs[index].data(),
             anon: false,
+            isOnPop: false,
           ),
         );
       },

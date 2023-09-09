@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/post_card.dart';
+
 class AnonFeedScreen extends StatelessWidget {
   const AnonFeedScreen({
     super.key,
@@ -24,8 +25,9 @@ class AnonFeedScreen extends StatelessWidget {
         return ListView.builder(
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) => PostCard(
-            snap: snapshot.data!.docs[index].data(), 
+            snap: snapshot.data!.docs[index].data(),
             anon: true,
+            isOnPop: false,
           ),
         );
       },

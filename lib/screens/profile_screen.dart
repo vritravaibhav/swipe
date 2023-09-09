@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/utils/utils.dart';
+import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
 
 import '../Resources/auth_methods.dart';
@@ -26,6 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isFollowing = false;
   bool isLoading = false;
   TextEditingController _name = TextEditingController();
+  TextEditingController _bio = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -85,25 +88,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
-  editname(BuildContext context) {
-    //
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Enter your new name"),
-            children: [
-              TextField(
-                controller: _name,
-                decoration: InputDecoration(
-
-                ),
-              )
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -117,7 +101,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 userData['username'],
               ),
               centerTitle: false,
-              actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
+              actions: [
+                userData["uid"] != FirebaseAuth.instance.currentUser!.uid
+                    ? SizedBox()
+                    : IconButton(
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            isScrollControlled: true,
+                            // enableDrag: true,
+
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                child: SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          TextField(
+                                            decoration: InputDecoration(
+                                              hintText: "Enter Your Name",
+                                            ),
+                                            controller: _name,
+                                            autofocus: true,
+                                          ),
+                                          ElevatedButton(
+                                            child: const Text(' Save'),
+                                            onPressed: () async {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(userData["uid"])
+                                                  .update(
+                                                      {"username": _name.text});
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.edit))
+              ],
             ),
             body: ListView(
               children: [
@@ -278,7 +316,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         DocumentSnapshot snap =
                             (snapshot.data! as dynamic).docs[index];
 
-                        return Container(
+                        return InkWell(
+                          onTap: () {
+                            showDialog(
+                                //  contentPadding: EdgeInsets.zero,
+                                context: context,
+                                builder: (context) {
+                                  return SimpleDialog(
+                                    //  insetPadding: EdgeInsets.all(0),
+                                    contentPadding: EdgeInsets.all(0),
+                                    // title: const Text("Create a post"),
+                                    children: [
+                                      PostCard(
+                                          snap: snap,
+                                          anon: false,
+                                          isOnPop: true)
+                                    ],
+                                  );
+                                });
+                          },
                           child: Image(
                             image: NetworkImage(snap['postUrl']),
                             fit: BoxFit.cover,
