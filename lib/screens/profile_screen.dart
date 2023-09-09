@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/utils/utils.dart';
+import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
 
 import '../Resources/auth_methods.dart';
@@ -26,7 +27,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int following = 0;
   bool isFollowing = false;
   bool isLoading = false;
+
   final TextEditingController _name = TextEditingController();
+  TextEditingController _bio = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -102,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -116,7 +120,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 userData['username'],
               ),
               centerTitle: false,
-              actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
+              actions: [
+                userData["uid"] != FirebaseAuth.instance.currentUser!.uid
+                    ? SizedBox()
+                    : IconButton(
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            isScrollControlled: true,
+                            // enableDrag: true,
+
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                child: SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          TextField(
+                                            decoration: InputDecoration(
+                                              hintText: "Enter Your Name",
+                                            ),
+                                            controller: _name,
+                                            autofocus: true,
+                                          ),
+                                          ElevatedButton(
+                                            child: const Text(' Save'),
+                                            onPressed: () async {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(userData["uid"])
+                                                  .update(
+                                                      {"username": _name.text});
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.edit))
+              ],
             ),
             body: ListView(
               children: [
@@ -310,6 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           );
+
                   },
                 )
               ],

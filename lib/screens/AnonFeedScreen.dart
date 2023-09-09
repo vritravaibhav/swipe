@@ -27,6 +27,7 @@ class AnonFeedScreen extends StatelessWidget {
           itemBuilder: (context, index) => PostCard(
             snap: snapshot.data!.docs[index].data(),
             anon: true,
+            isOnPop: false,
           ),
         );
       },

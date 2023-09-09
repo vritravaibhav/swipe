@@ -28,7 +28,9 @@ class _TweetScreenState extends State<TweetScreen> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
         return ListView(

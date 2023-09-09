@@ -114,12 +114,22 @@ class AuthMethods {
         uid: cred.user!.uid,
         photoUrl: googlesUser.photoURL.toString(),
         username: googlesUser.displayName.toString(),
-        bio: "Logged in",
+        bio: "",
         followers: [],
         following: []);
     //var m = user.toJson();
 
-    await _firestore.collection('users').doc(cred.user!.uid).set(user.toJson());
+    try {
+      await _firestore
+          .collection('users')
+          .doc(cred.user!.uid)
+          .update({"uid": cred.user!.uid});
+    } catch (e) {
+      await _firestore
+          .collection('users')
+          .doc(cred.user!.uid)
+          .set(user.toJson());
+    }
 
     return "good";
   }

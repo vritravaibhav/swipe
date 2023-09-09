@@ -10,10 +10,17 @@ import 'package:instagramclone/widget/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/profile_screen.dart';
+
 class PostCard extends StatefulWidget {
   final snap;
   final bool anon;
-  const PostCard({super.key, required this.snap, required this.anon});
+  final bool isOnPop;
+  const PostCard(
+      {super.key,
+      required this.snap,
+      required this.anon,
+      required this.isOnPop});
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -42,16 +49,29 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
     return Container(
-      color: !widget.anon ? mobileBackgroundColor : Colors.brown,
+      color: widget.anon ? mobileBackgroundColor : Colors.brown,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10)
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10)
                 .copyWith(right: 0),
-            child: Row(
-              children: [
-                ClipOval(
+            child: InkWell(
+              onTap: () {
+                widget.anon
+                    ? () {}
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                                  uid: widget.snap["uid"],
+                                )),
+                      );
+                print("good");
+              },
+              child: Row(
+                children: [
+                   ClipOval(
                   child: SizedBox(
                     height: 32,
                     width: 32,
@@ -65,56 +85,63 @@ class _PostCardState extends State<PostCard> {
                             imageUrl: widget.snap['profImage'].toString()),
                   ),
                 ),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                  ),
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.anon ? "Anonymous" : widget.snap['username'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ]),
-                )),
-                widget.anon
-                    ? const SizedBox()
-                    : IconButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => Dialog(
-                                    child: ListView(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 16,
-                                      ),
-                                      shrinkWrap: true,
-                                      children: ['Delete']
-                                          .map((e) => InkWell(
-                                                onTap: () {
-                                                  FirestoreMethods().deletePost(
-                                                      widget.snap['postId']);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 16),
-                                                  child: Text(e),
-                                                ),
-                                              ))
-                                          .toList(),
-                                    ),
-                                  ));
-                        },
-                        icon: const Icon(Icons.more_vert))
-              ],
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                    ),
+                    child: Text(
+                      widget.anon ? "Anonymous" : widget.snap['username'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )),
+                  widget.anon
+                      ? SizedBox()
+                      : user.uid == widget.snap["uid"]
+                          ? IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                          child: ListView(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                            ),
+                                            shrinkWrap: true,
+                                            children: ['Delete']
+                                                .map((e) => InkWell(
+                                                      onTap: () async {
+                                                        await FirestoreMethods()
+                                                            .deletePost(
+                                                                widget.snap[
+                                                                    'postId']);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        widget.isOnPop == true
+                                                            ? Navigator.of(
+                                                                    context)
+                                                                .pop()
+                                                            : () {};
+                                                      },
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 16),
+                                                        child: Text(e),
+                                                      ),
+                                                    ))
+                                                .toList(),
+                                          ),
+                                        ));
+                              },
+                              icon: Icon(Icons.more_vert))
+                          : SizedBox()
+                ],
+              ),
             ),
           ),
           GestureDetector(
