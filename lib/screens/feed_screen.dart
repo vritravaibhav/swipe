@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instagramclone/screens/AnonFeedScreen.dart';
 import 'package:instagramclone/screens/AnonymousTweetScreen.dart';
 import 'package:instagramclone/utils/colors.dart';
-import 'package:instagramclone/widget/post_card.dart';
 
 import 'feedpage.dart';
 
@@ -30,8 +27,8 @@ class FeedScreen extends StatelessWidget {
           ),
           title: SvgPicture.asset(
             'assets/ic_instagram.svg',
-            color: primaryColor,
             height: 32,
+            color: primaryColor,
           ),
           actions: [
             IconButton(
@@ -42,8 +39,13 @@ class FeedScreen extends StatelessWidget {
                 ))
           ],
         ),
-        body:
-            TabBarView(children: [FeedPage(), TweetScreen(), AnonFeedScreen()]),
+        body: TabBarView(
+          children: [
+            FeedPage(),
+            TweetScreen(),
+            AnonFeedScreen(),
+          ],
+        ),
       ),
     );
   }

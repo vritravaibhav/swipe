@@ -47,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   //lol
   void selectimage() async {
-    Uint8List? v =  await pickImage(ImageSource.gallery);
+    Uint8List? v = await pickImage(ImageSource.gallery);
     if (v != null) {
       setState(() {
         _image = v;
@@ -59,26 +59,25 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _isLoading = true;
     });
+
     String res = await AuthMethods().SignUpUser(
       email: _emailController.text,
       password: _passwordController.text,
       username: _usernameController.text,
-      bio: _bioController.text,
-      file: _image!,
+      bio: _bioController.text.isNotEmpty ? _bioController.text : "",
+      file: _image != null ? _image! : null,
     );
     if (res != 'Success') {
       showSnackBar(res, context);
-    }else{
-       Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) =>const ResponsiveLayout(
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const ResponsiveLayout(
           WebScreenLayout: WebScreenLayout(),
-           MobileScreenLayout: MobileScreenLayout(),
+          MobileScreenLayout: MobileScreenLayout(),
         ),
-        )
-           );
-        
+      ));
     }
-  
+
     setState(() {
       _isLoading = false;
     });
@@ -93,131 +92,144 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        width: double.infinity,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Flexible(
-            child: Container(),
-            flex: 2,
-          ),
-          //text field for input and all things
-          SvgPicture.asset(
-            'assets/ic_instagram.svg',
-            color: primaryColor,
-            height: 64,
-          ),
-          const SizedBox(
-            height: 64,
-          ),
-          //Circular widget to show our selected files
-          Stack(
-            children: [
-              _image != null
-                  ? CircleAvatar(
-                      radius: 64,
-                      backgroundImage: MemoryImage(_image!),
-                    )
-                  : CircleAvatar(
-                      radius: 64,
-                      backgroundImage: NetworkImage(vaibhav),
-                    ),
-              Positioned(
-                  bottom: -10,
-                  left: 80,
-                  child: IconButton(
-                    onPressed: () {
-                      selectimage();
-                    },
-                    icon: const Icon(Icons.add_a_photo),
-                  ))
-            ],
-          ),
+        body: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
 
-          TextFieldInput(
-              textEditingController: _usernameController,
-              hintText: "Enter your username",
-              textInputType: TextInputType.text),
-          SizedBox(
-            height: 24,
-          ),
-          TextFieldInput(
-              textEditingController: _passwordController,
-              hintText: "Enter your password",
-              ispass: true,
-              textInputType: TextInputType.text),
-          SizedBox(
-            height: 24,
-          ),
-          TextFieldInput(
-              textEditingController: _emailController,
-              hintText: "Enter your email",
-              textInputType: TextInputType.emailAddress),
-          SizedBox(
-            height: 24,
-          ),
-          TextFieldInput(
-              textEditingController: _bioController,
-              hintText: "Enter your bio",
-              textInputType: TextInputType.text),
-          SizedBox(
-            height: 24,
-          ),
-          InkWell(
-            onTap:// () {
-            //  if (_image != null) {
-                signUpUser,
-          //    } else {
-           //     showSnackBar("please upload picture", context);
-           //   }
-         //   },
-            child: Container(
-              child: _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: primaryColor,
+                  //text field for input and all things
+                  children: [
+                    const Spacer(),
+                    SvgPicture.asset(
+                      'assets/ic_instagram.svg',
+                      color: primaryColor,
+                      height: 64,
+                    ),
+                    const Spacer(),
+                    //Circular widget to show our selected files
+                    Stack(
+                      children: [
+                        _image != null
+                            ? CircleAvatar(
+                                radius: 64,
+                                backgroundImage: MemoryImage(_image!),
+                              )
+                            : CircleAvatar(
+                                radius: 64,
+                                backgroundImage: NetworkImage(vaibhav),
+                              ),
+                        Positioned(
+                            bottom: -10,
+                            left: 80,
+                            child: IconButton(
+                              onPressed: () {
+                                selectimage();
+                              },
+                              icon: const Icon(Icons.add_a_photo),
+                            ))
+                      ],
+                    ),
+                    const Spacer(),
+                    TextFieldInput(
+                        textEditingController: _usernameController,
+                        hintText: "Enter your username",
+                        textInputType: TextInputType.text),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    TextFieldInput(
+                        textEditingController: _passwordController,
+                        hintText: "Enter your password",
+                        ispass: true,
+                        textInputType: TextInputType.text),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    TextFieldInput(
+                        textEditingController: _emailController,
+                        hintText: "Enter your email",
+                        textInputType: TextInputType.emailAddress),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    TextFieldInput(
+                        textEditingController: _bioController,
+                        hintText: "Enter your bio",
+                        textInputType: TextInputType.text),
+                    const SizedBox(height: 24),
+                    InkWell(
+                      onTap: // () {
+                          //  if (_image != null) {
+                          signUpUser,
+                      //    } else {
+                      //     showSnackBar("please upload picture", context);
+                      //   }
+                      //   },
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: const ShapeDecoration(
+                            color: blueColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                            )),
+                        child: _isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: primaryColor,
+                                ),
+                              )
+                            : const Text("Sign up"),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: const Text("Already have an account?"),
+                        ),
+                        // SizedBox(width: 20,),
+                        GestureDetector(
+                          onTap: () {
+                            if (_emailController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Enter Email')));
+                            }
+                            if (_passwordController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Enter Password')));
+                            }
+                            if (_usernameController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Enter Username')));
+                            }
+                            navigateToLogin();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      ],
                     )
-                  : const Text("Sign up"),
-              width: double.infinity,
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(vertical: 12),
-              decoration: ShapeDecoration(
-                  color: blueColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  )),
-            ),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Flexible(
-            child: Container(),
-            flex: 2,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                child: const Text("Already have an account?"),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-              ),
-              // SizedBox(width: 20,),
-              GestureDetector(
-                onTap: navigateToLogin,
-                child: Container(
-                  child: Text(
-                    "Login",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                ),
-              )
-            ],
-          )
-        ]),
-      )),
+                  ]),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,15 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:instagramclone/providers/UserProvider.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/global_variable.dart';
-import 'package:instagramclone/utils/utils.dart';
-import 'package:instagramclone/models/user.dart' as model;
-import 'package:provider/provider.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({super.key});
@@ -73,10 +65,9 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     // model.User user = Provider.of<UserProvider>(context).getUse;
     return Scaffold(
       body: PageView(
-        children: 
-        homeScreenItems,
-      
-       //physics: const NeverScrollableScrollPhysics(),
+        children: homeScreenItems,
+
+        //physics: const NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: onPageChanged,
       ),
