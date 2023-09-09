@@ -27,7 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int following = 0;
   bool isFollowing = false;
   bool isLoading = false;
-  TextEditingController _name = TextEditingController();
+
+  final TextEditingController _name = TextEditingController();
   TextEditingController _bio = TextEditingController();
 
   @override
@@ -89,6 +90,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
+  editname(BuildContext context) {
+    //
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Enter your new name"),
+            children: [
+              TextField(
+                controller: _name,
+                decoration: InputDecoration(),
+              )
+            ],
+          );
+        });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -170,8 +188,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? ClipOval(
                                   child: SizedBox(
                                     height: 80,
+                                    width: 80,
                                     child: CachedNetworkImage(
                                       imageUrl: userData['photoUrl'],
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 )
@@ -279,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Text(
                           userData['username'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -296,7 +316,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                const Divider(),
+                const Divider(
+                  thickness: 3,
+                ),
                 FutureBuilder(
                   future: FirebaseFirestore.instance
                       .collection('posts')
@@ -309,46 +331,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     }
 
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: (snapshot.data! as dynamic).docs.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 1.5,
-                        childAspectRatio: 1,
-                      ),
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot snap =
-                            (snapshot.data! as dynamic).docs[index];
+                    int length = (snapshot.data! as dynamic).docs.length;
 
-                        return InkWell(
-                          onTap: () {
-                            showDialog(
-                                //  contentPadding: EdgeInsets.zero,
-                                context: context,
-                                builder: (context) {
-                                  return SimpleDialog(
-                                    //  insetPadding: EdgeInsets.all(0),
-                                    contentPadding: EdgeInsets.all(0),
-                                    // title: const Text("Create a post"),
-                                    children: [
-                                      PostCard(
-                                          snap: snap,
-                                          anon: false,
-                                          isOnPop: true)
-                                    ],
-                                  );
-                                });
-                          },
-                          child: Image(
-                            image: NetworkImage(snap['postUrl']),
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      },
-                    );
+                    return length != 0
+                        ? GridView.builder(
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            itemCount: length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 1.5,
+                              childAspectRatio: 1,
+                            ),
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot snap =
+                                  (snapshot.data! as dynamic).docs[index];
+                              return CachedNetworkImage(
+                                imageUrl: snap['postUrl'],
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.2),
+                              child: const Text(
+                                'No post yet...Try it..',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          );
+
                   },
                 )
               ],

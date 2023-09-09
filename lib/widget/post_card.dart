@@ -1,11 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:instagramclone/Resources/firestore_methods.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
 import 'package:instagramclone/models/user.dart';
 import 'package:instagramclone/providers/UserProvider.dart';
-import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/screens/comments_screeens.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/widget/like_animation.dart';
@@ -33,7 +31,6 @@ class _PostCardState extends State<PostCard> {
   int commentLen = 0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getComments();
   }
@@ -74,17 +71,20 @@ class _PostCardState extends State<PostCard> {
               },
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage:
-                        //   https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2F0Djl8U5ZaJgPz0PIK9b4c6p4JWz1?alt=media&token=8f408628-e847-4862-ba3e-49d18587b998
-                        widget.anon
-                            ? NetworkImage(
-                                "https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b")
-                            : NetworkImage(
-                                widget.snap['profImage'].toString(),
-                              ),
+                   ClipOval(
+                  child: SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: widget.anon
+                        ? CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            imageUrl:
+                                'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
+                        : CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            imageUrl: widget.snap['profImage'].toString()),
                   ),
+                ),
                   Expanded(
                       child: Padding(
                     padding: const EdgeInsets.only(
@@ -156,23 +156,18 @@ class _PostCardState extends State<PostCard> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.35,
                 width: double.infinity,
-                child: Image.network(
-                  widget.snap['postUrl'],
+                child: CachedNetworkImage(
+                  imageUrl: widget.snap['postUrl'],
                   fit: BoxFit.cover,
                 ),
                 //child: Image(image: snap),
               ),
               AnimatedOpacity(
                 opacity: isLikeAnimating ? 1 : 0,
-                duration: Duration(
+                duration: const Duration(
                   milliseconds: 200,
                 ),
                 child: LikeAnimation(
-                  child: const Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                    size: 100,
-                  ),
                   isAnimating: isLikeAnimating,
                   duration: const Duration(
                     milliseconds: 400,
@@ -182,6 +177,11 @@ class _PostCardState extends State<PostCard> {
                       isLikeAnimating = false;
                     });
                   },
+                  child: const Icon(
+                    Icons.favorite,
+                    color: Colors.white,
+                    size: 100,
+                  ),
                 ),
               )
             ]),
@@ -200,7 +200,7 @@ class _PostCardState extends State<PostCard> {
                           Icons.favorite,
                           color: Colors.red,
                         )
-                      : Icon(
+                      : const Icon(
                           Icons.favorite,
                           color: Colors.white,
                         ),
@@ -216,13 +216,13 @@ class _PostCardState extends State<PostCard> {
                             )),
                   );
                 },
-                icon: Icon(Icons.comment_outlined),
+                icon: const Icon(Icons.comment_outlined),
               ),
             ],
           ),
           // caption and comments
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,17 +269,19 @@ class _PostCardState extends State<PostCard> {
                       );
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Text(
-                        style: TextStyle(fontSize: 16, color: secondaryColor),
+                        style: const TextStyle(
+                            fontSize: 16, color: secondaryColor),
                         'view all $commentLen comments',
                       ),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                        style: TextStyle(fontSize: 16, color: secondaryColor),
+                        style: const TextStyle(
+                            fontSize: 16, color: secondaryColor),
                         DateFormat.yMMMd()
                             .format(widget.snap['datePublished'].toDate())),
                   ),
