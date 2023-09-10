@@ -19,7 +19,7 @@ class FeedScreen extends StatelessWidget {
           toolbarHeight: 35,
           backgroundColor: mobileBackgroundColor,
           centerTitle: false,
-          bottom: TabBar(
+          bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.directions_car)),
               Tab(icon: Icon(Icons.baby_changing_station)),
@@ -45,7 +45,7 @@ class FeedScreen extends StatelessWidget {
                 ))
           ],
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             FeedPage(),
             TweetScreen(),
