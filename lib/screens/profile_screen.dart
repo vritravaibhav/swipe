@@ -303,6 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .where('uid', isEqualTo: widget.uid)
                       .get(),
                   builder: (context, snapshot) {
+                    print("$snapshot ssddda");
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(),

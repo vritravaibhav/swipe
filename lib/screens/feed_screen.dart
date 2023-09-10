@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instagramclone/screens/AnonFeedScreen.dart';
 import 'package:instagramclone/screens/AnonymousTweetScreen.dart';
+import 'package:instagramclone/screens/chat_list.dart';
 import 'package:instagramclone/utils/colors.dart';
 
 import 'feedpage.dart';
@@ -32,7 +33,12 @@ class FeedScreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatList()),
+                  );
+                },
                 icon: const Icon(
                   Icons.message,
                   color: primaryColor,

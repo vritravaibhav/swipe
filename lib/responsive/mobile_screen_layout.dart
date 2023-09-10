@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/global_variable.dart';
+import 'package:provider/provider.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({super.key});
@@ -13,24 +15,6 @@ class MobileScreenLayout extends StatefulWidget {
 String username = "";
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   getUsername();
-  // }
-
-  // getUsername() async {
-  //   DocumentSnapshot snap = await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get();
-  //   setState(() {
-  //     username = (snap.data()as Map<String,dynamic>)['username'];
-  //   });
-  //   //showSnackBar("done", context);
-  // }
-
   int _page = 0;
   late PageController pageController;
   @override
@@ -63,6 +47,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   @override
   Widget build(BuildContext context) {
     // model.User user = Provider.of<UserProvider>(context).getUse;
+    Provider.of<TypeProvdier>(context, listen: true).vaibhav();
     return Scaffold(
       body: PageView(
         children: homeScreenItems,

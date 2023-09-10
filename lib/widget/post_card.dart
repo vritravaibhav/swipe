@@ -36,6 +36,7 @@ class _PostCardState extends State<PostCard> {
     // TODO: implement initState
     super.initState();
     getComments();
+    print(widget.snap);
   }
 
   getComments() async {
@@ -52,12 +53,12 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
     return Container(
-      color: widget.anon ? mobileBackgroundColor : Colors.brown,
+      color: !widget.anon ? mobileBackgroundColor : Colors.brown,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10)
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10)
                 .copyWith(right: 0),
             child: InkWell(
               onTap: () {
