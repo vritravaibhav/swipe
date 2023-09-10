@@ -100,17 +100,33 @@ class _ChatPageState extends State<ChatPage> {
                                 color: Colors.blue,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(7))),
-                            child: Text(
-                              widget.messages[widget.messages.length -
-                                  index -
-                                  1]["chatData"],
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
-                              overflow: TextOverflow.clip,
-                              // textDirection: TextDirection.rtl,
-                              // textAlign: TextAlign.justify,
-                              //softWrap: true,
-                              maxLines: 5,
+
+                            //
+                            child: SizedBox(
+                              width: (MediaQuery.of(context).size.width) / 1.4,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Flexible(
+                                    child: SizedBox(
+                                      child: Text(
+                                        widget.messages[widget.messages.length -
+                                            index -
+                                            1]["chatData"],
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        //  overflow: TextOverflow.clip,
+                                        // textDirection: TextDirection.rtl,
+                                        // textAlign: TextAlign.justify,
+                                        //softWrap: true,
+                                        // maxLines: 5,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ));
