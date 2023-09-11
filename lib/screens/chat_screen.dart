@@ -21,10 +21,10 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    // vaibhav();
+    vaibhav();
   }
 
-  bool goodies = false;
+  bool goodies = true;
 
   Future<void> vaibhav() async {
     // });
@@ -39,7 +39,7 @@ class _ChatPageState extends State<ChatPage> {
         widget.messages = x["Chat"];
         isLoading = true;
         // print("pragma");
-
+        goodies = false;
         setState(() {});
       }
     });
@@ -49,19 +49,23 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     //  var m = Provider.of<TypeProvdier>(context).messages;
+    if (goodies) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc("GlobalChat")
+          .snapshots()
+          .listen((event) {
+        //List<dynamic> manoj = [];
+        // manoj = event.data()!["Chat"];
 
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc("GlobalChat")
-        .snapshots()
-        .listen((event) {
-      //List<dynamic> manoj = [];
-      // manoj = event.data()!["Chat"];
-      // vaibhav();
+        // vaibhav();
+        print("loove");
+        vaibhav();
 
-      vaibhav();
-      //  print(widget.messages.length);
-    });
+        //  print(widget.messages.length);
+      });
+    }
+    goodies = true;
 
     if (!isLoading) {
       return Center(
@@ -86,7 +90,9 @@ class _ChatPageState extends State<ChatPage> {
                     return Padding(
                         padding: const EdgeInsets.all(1.0),
                         child: Align(
-                          alignment: widget.messages[index]["uid"] ==
+                          alignment: widget.messages[widget.messages.length -
+                                      index -
+                                      1]["uid"] ==
                                   FirebaseAuth.instance.currentUser!.uid
                               ? Alignment.topRight
                               : Alignment.topLeft,
