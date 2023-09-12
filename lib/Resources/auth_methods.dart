@@ -18,6 +18,11 @@ class AuthMethods {
     return model.User.fromSnap(snap);
   }
 
+  Future<model.User> getUser(String uid) async {
+    DocumentSnapshot snap = await _firestore.collection('users').doc(uid).get();
+    return model.User.fromSnap(snap);
+  }
+
   // ignore: non_constant_identifier_names
   Future<String> SignUpUser(
       {required String email,

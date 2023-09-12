@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/providers/typePro.dart';
+import 'package:instagramclone/widget/receiver_row_view.dart';
+import 'package:instagramclone/widget/sender_row_view.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
@@ -45,6 +48,19 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  void sendMessage() {
+    FirebaseFirestore.instance.collection("users").doc("GlobalChat").update({
+      "Chat": FieldValue.arrayUnion([
+        {
+          "chatData": _messageController.text,
+          "datetime": DateTime.now(),
+          "uid": FirebaseAuth.instance.currentUser!.uid,
+        }
+      ])
+    });
+    _messageController.clear();
+  }
+
   ScrollController _scrollController = new ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -85,55 +101,20 @@ class _ChatPageState extends State<ChatPage> {
                   controller: _scrollController,
                   reverse: true,
                   shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
                   itemCount: widget.messages.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Align(
-                          alignment: widget.messages[widget.messages.length -
-                                      index -
-                                      1]["uid"] ==
-                                  FirebaseAuth.instance.currentUser!.uid
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
-
-                          // alignment: Alignment.bottomRight,
-
-                          // _messages[index]["uid"]==FirebaseAuth.instance.currentUser.uid?
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(7))),
-
-                            //
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: SizedBox(
-                                    child: Text(
-                                      widget.messages[widget.messages.length -
-                                          index -
-                                          1]["chatData"],
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      //  overflow: TextOverflow.clip,
-                                      // textDirection: TextDirection.rtl,
-                                      // textAlign: TextAlign.justify,
-                                      //softWrap: true,
-                                      // maxLines: 5,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ));
+                    return widget.messages[widget.messages.length - index - 1]
+                                ["uid"] ==
+                            FirebaseAuth.instance.currentUser!.uid
+                        ? SenderRowView(
+                            senderMessage: widget
+                                .messages[widget.messages.length - index - 1],
+                          )
+                        : ReceiverRowView(
+                            receiverMessage: widget
+                                .messages[widget.messages.length - index - 1],
+                          );
                   },
                 ),
               ),
@@ -144,6 +125,7 @@ class _ChatPageState extends State<ChatPage> {
                     Expanded(
                       child: TextField(
                         controller: _messageController,
+                        maxLines: null,
                         decoration: InputDecoration(
                           hintText: 'Type a message...',
                         ),
@@ -155,19 +137,7 @@ class _ChatPageState extends State<ChatPage> {
                       icon: Icon(Icons.send),
                       onPressed: () {
                         if (_messageController.text.isNotEmpty) {
-                          FirebaseFirestore.instance
-                              .collection("users")
-                              .doc("GlobalChat")
-                              .update({
-                            "Chat": FieldValue.arrayUnion([
-                              {
-                                "chatData": _messageController.text,
-                                "datetime": DateTime.now(),
-                                "uid": FirebaseAuth.instance.currentUser!.uid,
-                              }
-                            ])
-                          });
-                          _messageController.clear();
+                          sendMessage();
                         }
                       },
                     ),

@@ -72,20 +72,22 @@ class _PostCardState extends State<PostCard> {
               },
               child: Row(
                 children: [
-                   ClipOval(
-                  child: SizedBox(
-                    height: 32,
-                    width: 32,
-                    child: widget.anon
-                        ? CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl:
-                                'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
-                        : CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: widget.snap['profImage'].toString()),
+                  ClipOval(
+                    child: SizedBox(
+                      height: 32,
+                      width: 32,
+                      child: widget.snap['profImage'].toString().isNotEmpty
+                          ? widget.anon
+                              ? CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl:
+                                      'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
+                              : CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: widget.snap['profImage'].toString())
+                          : Icon(Icons.person),
+                    ),
                   ),
-                ),
                   Expanded(
                       child: Padding(
                     padding: const EdgeInsets.only(
