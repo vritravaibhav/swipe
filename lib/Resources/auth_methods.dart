@@ -122,7 +122,6 @@ class AuthMethods {
         bio: "",
         followers: [],
         following: []);
-    //var m = user.toJson();
 
     try {
       await _firestore

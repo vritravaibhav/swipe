@@ -106,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -325,7 +325,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .where('uid', isEqualTo: widget.uid)
                       .get(),
                   builder: (context, snapshot) {
-                    print("$snapshot ssddda");
+                    //  print("$snapshot ssddda");
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -349,9 +349,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             itemBuilder: (context, index) {
                               DocumentSnapshot snap =
                                   (snapshot.data! as dynamic).docs[index];
-                              return CachedNetworkImage(
-                                imageUrl: snap['postUrl'],
-                                fit: BoxFit.cover,
+                              return InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      //  contentPadding: EdgeInsets.zero,
+                                      context: context,
+                                      builder: (context) {
+                                        return SimpleDialog(
+                                          //  insetPadding: EdgeInsets.all(0),
+                                          contentPadding: EdgeInsets.all(0),
+                                          // title: const Text("Create a post"),
+                                          children: [
+                                            PostCard(
+                                                snap: snap,
+                                                anon: false,
+                                                isOnPop: true)
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: CachedNetworkImage(
+                                  imageUrl: snap['postUrl'],
+                                  fit: BoxFit.cover,
+                                ),
                               );
                             },
                           )
@@ -369,7 +389,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           );
-
                   },
                 )
               ],

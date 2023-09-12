@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/models/user.dart';
+import 'package:instagramclone/screens/profile_screen.dart';
 import 'package:intl/intl.dart';
 
 class ReceiverRowView extends StatelessWidget {
@@ -8,29 +10,42 @@ class ReceiverRowView extends StatelessWidget {
 
   final Map<String, dynamic> receiverMessage;
 
+  // final   User user;
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        StreamBuilder<User>(
-            stream: null,
-            builder: (context, snapshot) {
-              return const Flexible(
-                flex: 13,
-                fit: FlexFit.tight,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10.0, top: 1.0, bottom: 9.0),
-                  child: CircleAvatar(
-                    backgroundColor: Color(0xFF90C953),
-                    child: Text('X',
-                        style: TextStyle(
-                          color: Colors.black,
+        Flexible(
+          flex: 13,
+          fit: FlexFit.tight,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfileScreen(
+                          uid: receiverMessage["uid"],
                         )),
-                  ),
-                ),
               );
-            }),
+            },
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.0, top: 1.0, bottom: 9.0),
+              child: receiverMessage["photoUrl"] == null
+                  ? const CircleAvatar(
+                      backgroundColor: Color(0xFF90C953),
+                      child: Text('X',
+                          style: TextStyle(
+                            color: Colors.black,
+                          )))
+                  : CircleAvatar(
+                      backgroundColor: Color(0xFF90C953),
+                      foregroundImage:
+                          NetworkImage(receiverMessage["photoUrl"]),
+                    ),
+            ),
+          ),
+        ),
         Flexible(
           flex: 72,
           fit: FlexFit.tight,

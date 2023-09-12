@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/widget/receiver_row_view.dart';
 import 'package:instagramclone/widget/sender_row_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user.dart' as model;
+
 class ChatPage extends StatefulWidget {
-  List<dynamic> messages = [];
+  List<dynamic>? messages = [];
   @override
   _ChatPageState createState() => _ChatPageState();
 }
@@ -28,6 +31,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   bool goodies = true;
+  bool userAccess = false;
+  model.User? user;
 
   Future<void> vaibhav() async {
     // });
@@ -40,12 +45,18 @@ class _ChatPageState extends State<ChatPage> {
       if (documentSnapshot.exists) {
         x = documentSnapshot.data();
         widget.messages = x["Chat"];
-        isLoading = true;
+
         // print("pragma");
         goodies = false;
-        setState(() {});
       }
     });
+    if (!userAccess) {
+      user =
+          await AuthMethods().getUser(FirebaseAuth.instance.currentUser!.uid);
+      userAccess = true;
+    }
+    isLoading = true;
+    setState(() {});
   }
 
   void sendMessage() {
@@ -55,6 +66,7 @@ class _ChatPageState extends State<ChatPage> {
           "chatData": _messageController.text,
           "datetime": DateTime.now(),
           "uid": FirebaseAuth.instance.currentUser!.uid,
+          "photoUrl": user!.photoUrl
         }
       ])
     });
@@ -102,18 +114,18 @@ class _ChatPageState extends State<ChatPage> {
                   reverse: true,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
-                  itemCount: widget.messages.length,
+                  itemCount: widget.messages?.length ?? 0,
                   itemBuilder: (context, index) {
-                    return widget.messages[widget.messages.length - index - 1]
+                    return widget.messages![widget.messages!.length - index - 1]
                                 ["uid"] ==
                             FirebaseAuth.instance.currentUser!.uid
                         ? SenderRowView(
                             senderMessage: widget
-                                .messages[widget.messages.length - index - 1],
+                                .messages![widget.messages!.length - index - 1],
                           )
                         : ReceiverRowView(
                             receiverMessage: widget
-                                .messages[widget.messages.length - index - 1],
+                                .messages![widget.messages!.length - index - 1],
                           );
                   },
                 ),
