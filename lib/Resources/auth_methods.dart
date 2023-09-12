@@ -116,7 +116,7 @@ class AuthMethods {
     User? googlesUser = cred.user;
     model.User user = model.User(
         email: googlesUser!.email.toString(),
-        uid: cred.user!.uid,
+        uid: FirebaseAuth.instance.currentUser!.uid,
         photoUrl: googlesUser.photoURL.toString(),
         username: googlesUser.displayName.toString(),
         bio: "",
@@ -127,14 +127,9 @@ class AuthMethods {
     try {
       await _firestore
           .collection('users')
-          .doc(cred.user!.uid)
-          .update({"uid": cred.user!.uid});
-    } catch (e) {
-      await _firestore
-          .collection('users')
-          .doc(cred.user!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .set(user.toJson());
-    }
+    } catch (e) {}
 
     return "good";
   }
