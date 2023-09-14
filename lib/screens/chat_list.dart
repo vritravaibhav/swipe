@@ -5,25 +5,21 @@ import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/screens/chatScreenPersonal.dart';
 import 'package:instagramclone/screens/chat_screen.dart';
+import 'package:instagramclone/widget/chat_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../models/user.dart' as Model;
 import '../providers/UserProvider.dart';
 
-class ChatList extends StatelessWidget {
+class ChatList extends StatefulWidget {
   const ChatList({super.key});
-  // Future<void> sauravs() async {
-  //   print("gpd");
-  //   await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .get()
-  //       .then((QuerySnapshot querySnapshot) {
-  //     querySnapshot.docs.forEach((doc) {
-  //       print(doc["ggg"]);
-  //     });
-  //   });
-  // }
 
+  @override
+  State<ChatList> createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
+  // Future<void> sauravs() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,44 +91,47 @@ class ChatList extends StatelessWidget {
                       document.data()! as Map<String, dynamic>;
 
                   String user1uid;
-                  // Model.User? user;
+                  // // Model.User? user;
+                  // Model.User usert = flag.createUser();
                   if (data["uid"][0] ==
                       FirebaseAuth.instance.currentUser!.uid) {
-                    user1uid = data["uid"][0];
-                  } else {
                     user1uid = data["uid"][1];
+                  } else {
+                    user1uid = data["uid"][0];
                   }
-                  getUser1() async {
-                    flag.user = await AuthMethods().getUser(user1uid);
-                    if (!flag.chatlistflaging) {
-                      flag.chatlistflaging = true;
-                      flag.hearing();
-                    }
+                  // getUser1() async {
+                  //   usert = await AuthMethods().getUser(user1uid);
+                  //   flag.hearing();
+                  //   if (!flag.chatlistflaging) {
+                  //     flag.chatlistflaging = true;
+                  //   }
 
-                    flag.chatlistflag1 = true;
-                  }
+                  //   flag.chatlistflag1 = true;
+                  // }
 
-                  getUser1();
+                  // getUser1();
 
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.blueGrey,
-                      backgroundImage: NetworkImage(flag.user
-                          .photoUrl), // Display the first letter of the name
-                    ),
-                    title: Text(flag.user.username),
-                    subtitle:
-                        Text(data["Chat"][data["Chat"].length - 1]["chatData"]),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatPagePersonal(
-                                  snap: data["docId"],
-                                )),
-                      );
-                    },
-                  );
+                  // return ListTile(
+                  //   leading: CircleAvatar(
+                  //     backgroundColor: Colors.blueGrey,
+                  //     backgroundImage: NetworkImage(usert
+                  //         .photoUrl), // Display the first letter of the name
+                  //   ),
+                  //   title: Text(usert.username),
+                  //   subtitle:
+                  //       Text(data["Chat"][data["Chat"].length - 1]["chatData"]),
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => ChatPagePersonal(
+                  //                 snap: data["docId"],
+                  //               )),
+                  //     );
+                  //   },
+                  // );
+                  return ChatTile(data: data, uid: user1uid);
+
                   //}
                 }).toList(),
               );

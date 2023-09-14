@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int following = 0;
   bool isFollowing = false;
   bool isLoading = true;
-
+  bool matched = false;
   final TextEditingController _name = TextEditingController();
   TextEditingController _bio = TextEditingController();
 
@@ -40,6 +40,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   getData() async {
+    setState(() {
+      isLoading = true;
+    });
     print(widget.uid);
     try {
       var userSnap = await FirebaseFirestore.instance
@@ -60,12 +63,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isFollowing = userSnap
           .data()!['followers']
           .contains(FirebaseAuth.instance.currentUser!.uid);
+      matched =
+          userData["matched"].contains(FirebaseAuth.instance.currentUser!.uid);
       setState(() {});
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
 
-    isLoading = false;
+    setState(() {
+      isLoading = false;
+    });
   }
 
   onSend(BuildContext context) {
@@ -223,55 +230,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               );
                                             },
                                           )
-                                        : isFollowing
+                                        : matched
                                             ? FollowButton(
-                                                text: 'Unsend Super Like',
-                                                backgroundColor: Colors.white,
-                                                textColor: Colors.black,
-                                                borderColor: Colors.grey,
-                                                function: () async {
-                                                  bool x =
-                                                      await FirestoreMethods()
-                                                          .followUser(
-                                                    FirebaseAuth.instance
-                                                        .currentUser!.uid,
-                                                    userData['uid'],
-                                                  );
-                                                  if (x) {
-                                                    print("lols");
-                                                    onSend(context);
-                                                  }
+                                                backgroundColor: Colors.grey,
+                                                borderColor: Colors.black,
+                                                text: "Matched",
+                                                textColor: Colors.black38)
+                                            : isFollowing
+                                                ? FollowButton(
+                                                    text: 'Unsend Super Like',
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    textColor: Colors.black,
+                                                    borderColor: Colors.grey,
+                                                    function: () async {
+                                                      bool x =
+                                                          await FirestoreMethods()
+                                                              .followUser(
+                                                        FirebaseAuth.instance
+                                                            .currentUser!.uid,
+                                                        userData['uid'],
+                                                      );
+                                                      if (x) {
+                                                        onSend(context);
+                                                      }
 
-                                                  setState(() {
-                                                    isFollowing = false;
-                                                    followers--;
-                                                  });
-                                                },
-                                              )
-                                            : FollowButton(
-                                                text: 'Send Super like',
-                                                backgroundColor: Colors.blue,
-                                                textColor: Colors.white,
-                                                borderColor: Colors.blue,
-                                                function: () async {
-                                                  bool x =
-                                                      await FirestoreMethods()
-                                                          .followUser(
-                                                    FirebaseAuth.instance
-                                                        .currentUser!.uid,
-                                                    userData['uid'],
-                                                  );
-                                                  if (x) {
-                                                    print("lols");
-                                                    onSend(context);
-                                                  }
+                                                      setState(() {
+                                                        isFollowing = false;
+                                                        followers--;
+                                                      });
+                                                    },
+                                                  )
+                                                : FollowButton(
+                                                    text: 'Send Super like',
+                                                    backgroundColor:
+                                                        Colors.blue,
+                                                    textColor: Colors.white,
+                                                    borderColor: Colors.blue,
+                                                    function: () async {
+                                                      bool x =
+                                                          await FirestoreMethods()
+                                                              .followUser(
+                                                        FirebaseAuth.instance
+                                                            .currentUser!.uid,
+                                                        userData['uid'],
+                                                      );
+                                                      if (x) {
+                                                        setState(() {
+                                                          matched = true;
+                                                        });
+                                                        onSend(context);
+                                                      }
 
-                                                  setState(() {
-                                                    isFollowing = true;
-                                                    followers++;
-                                                  });
-                                                },
-                                              )
+                                                      setState(() {
+                                                        isFollowing = true;
+                                                        followers++;
+                                                      });
+                                                    },
+                                                  )
                                   ],
                                 ),
                               ],

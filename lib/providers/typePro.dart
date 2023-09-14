@@ -11,10 +11,23 @@ class TypeProvdier with ChangeNotifier {
       username: "",
       bio: "",
       followers: [],
-      following: []);
+      following: [],
+      matched: []);
 
   void hearing() {
     notifyListeners();
+  }
+
+  User createUser() {
+    return User(
+        email: "",
+        uid: "",
+        photoUrl: "G",
+        username: "",
+        bio: "",
+        followers: [],
+        following: [],
+        matched: []);
   }
 
   User userx = User(
@@ -25,7 +38,8 @@ class TypeProvdier with ChangeNotifier {
       username: "Loading...",
       bio: "Loading...",
       followers: [],
-      following: []);
+      following: [],
+      matched: []);
 
   bool chatlistflaging = false;
 

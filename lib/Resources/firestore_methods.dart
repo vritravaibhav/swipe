@@ -152,6 +152,17 @@ class FirestoreMethods {
             ])
           });
 
+          await FirebaseFirestore.instance.collection("users").doc(uid).update({
+            "matched": FieldValue.arrayUnion([followId])
+          });
+
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(followId)
+              .update({
+            "matched": FieldValue.arrayUnion([uid])
+          });
+
           return true;
         }
       }
