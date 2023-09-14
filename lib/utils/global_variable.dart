@@ -8,10 +8,11 @@ import 'package:instagramclone/screens/profile_screen.dart';
 import 'package:instagramclone/screens/search_screen.dart';
 
 const webScreenSize = 600;
+String uid = FirebaseAuth.instance.currentUser!.uid;
 List<Widget> homeScreenItems = [
   FeedScreen(),
   SearchScreen(),
-  AddPostScreen(),
-  GlobalNotification(),
+  const AddPostScreen(),
+  const GlobalNotification(),
   ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid)
 ];

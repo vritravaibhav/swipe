@@ -133,16 +133,28 @@ class FirestoreMethods {
         await _firestore.collection('users').doc(uid).update({
           'following': FieldValue.arrayUnion([followId])
         });
-        if (likedBy.toString().contains(followId)) {
-          print("noncon");
+        print(followId);
+        print(likedBy[0]);
+        if (likedBy.contains(followId)) {
+          await FirebaseFirestore.instance
+              .collection("chats")
+              .doc(uid + followId)
+              .set({
+            "uid": [uid, followId],
+            "docId": uid + followId,
+            "Chat": FieldValue.arrayUnion([
+              {
+                "chatData": "Hey, we matched",
+                "datetime": DateTime.now(),
+                "uid": FirebaseAuth.instance.currentUser!.uid,
+                "photoUrl": ""
+              }
+            ])
+          });
+
           return true;
         }
       }
-      for (String str in liked) {
-        print(str);
-      }
-      print(likedBy[0] == followId + " jj");
-      print(likedBy.toString().contains(followId));
 
       return false;
     } catch (e) {

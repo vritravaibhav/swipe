@@ -1,9 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
+
+import '../screens/GlobalNotification.dart';
+import '../screens/feed_screen.dart';
+import '../screens/post_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/search_screen.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({super.key});
@@ -83,12 +90,20 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   @override
   Widget build(BuildContext context) {
     // model.User user = Provider.of<UserProvider>(context).getUse;
-    Provider.of<TypeProvdier>(context, listen: true).vaibhav();
+
+    // Provider.of<TypeProvdier>(context, listen: true).vaibhav();
+    print(FirebaseAuth.instance.currentUser!.uid + " hosanna jab se");
     return Scaffold(
       body: PageView(
         controller: pageController,
         onPageChanged: onPageChanged,
-        children: homeScreenItems,
+        children: [
+          FeedScreen(),
+          SearchScreen(),
+          const AddPostScreen(),
+          const GlobalNotification(),
+          ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid)
+        ],
       ),
       bottomNavigationBar: CupertinoTabBar(
         items: _navItems(),

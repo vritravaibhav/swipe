@@ -89,7 +89,7 @@ class AuthMethods {
 
   Future<void> signOut() async {
     await _auth.signOut();
-    await GoogleSignIn().disconnect();
+    await GoogleSignIn().signOut();
   }
 
   Future<String> signInWithGoogle() async {
@@ -123,12 +123,22 @@ class AuthMethods {
         followers: [],
         following: []);
 
-    try {
-      await _firestore
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set(user.toJson());
-    } catch (e) {}
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        // print('Document data: ${documentSnapshot.data()}');
+      } else {
+        await _firestore
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(user.toJson());
+      }
+    });
+
+    try {} catch (e) {}
 
     return "good";
   }
