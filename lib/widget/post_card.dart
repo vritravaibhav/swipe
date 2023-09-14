@@ -5,6 +5,7 @@ import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
 import 'package:instagramclone/models/user.dart';
 import 'package:instagramclone/providers/UserProvider.dart';
+import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/screens/comments_screeens.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/widget/like_animation.dart';
@@ -30,15 +31,12 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
   int commentLen = 0;
-  User? user1;
-  //User? _user;
-  // User get getUsersi => _user!;
 
   @override
   void initState() {
     super.initState();
-    getUsers(widget.snap);
-    getComments();
+    // getUsers(widget.snap);
+    // getComments();
 
     // print(widget.snap);
   }
@@ -52,272 +50,282 @@ class _PostCardState extends State<PostCard> {
         .collection('comments')
         .get();
     commentLen = snap.docs.length;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  Future<User> getUsers(var snap) async {
-    print(widget.snap["uid"]);
-    user1 = await AuthMethods().getUser(widget.snap["uid"]);
-    //user1 = user;
-    print(user1!.username);
-    isLoading = true;
-    return user1!;
-  }
-
+  bool ishearing = false;
+  bool callGetUser = false;
+  bool user1flag = false;
+  late User user1;
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
-    if (isLoading) {
-      return Container(
-        color: !widget.anon ? mobileBackgroundColor : Colors.brown,
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10)
-                  .copyWith(right: 0),
-              child: InkWell(
-                onTap: () {
-                  widget.anon
-                      ? () {}
-                      : Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfileScreen(
-                                    uid: widget.snap["uid"],
-                                  )),
-                        );
-                  print("good");
-                },
-                child: Row(
-                  children: [
-                    ClipOval(
-                      child: SizedBox(
-                        height: 32,
-                        width: 32,
-                        child: widget.snap['profImage'].toString().isNotEmpty
-                            ? widget.anon
-                                ? CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl:
-                                        'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
-                                : CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: user1!.photoUrl)
-                            : Icon(Icons.person),
+    final x = Provider.of<TypeProvdier>(context);
+    if (!user1flag) {
+      user1 = x.userx;
+      user1flag = true;
+    }
+
+    Future<User> getUsers(var snap) async {
+      user1 = await AuthMethods().getUser(widget.snap["uid"]);
+      if (!ishearing) {
+        x.hearing();
+        ishearing = true;
+      }
+
+      return user1;
+    }
+
+    if (!callGetUser) {
+      getUsers(widget.snap);
+      print("called");
+      callGetUser = true;
+    }
+
+    return Container(
+      color: !widget.anon ? mobileBackgroundColor : Colors.brown,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10)
+                .copyWith(right: 0),
+            child: InkWell(
+              onTap: () {
+                widget.anon
+                    ? () {}
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                                  uid: widget.snap["uid"],
+                                )),
+                      );
+              },
+              child: Row(
+                children: [
+                  ClipOval(
+                    child: SizedBox(
+                      height: 32,
+                      width: 32,
+                      child: widget.snap['profImage'].toString().isNotEmpty
+                          ? widget.anon
+                              ? CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl:
+                                      'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
+                              : CachedNetworkImage(
+                                  fit: BoxFit.cover, imageUrl: user1.photoUrl)
+                          : Icon(Icons.person),
+                    ),
+                  ),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                    ),
+                    child: Text(
+                      widget.anon ? "Anonymous" : user1.username,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 8,
-                      ),
-                      child: Text(
-                        widget.anon ? "Anonymous" : user1!.username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )),
-                    widget.anon
-                        ? SizedBox()
-                        : user.uid == widget.snap["uid"]
-                            ? IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => Dialog(
-                                            child: ListView(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                              ),
-                                              shrinkWrap: true,
-                                              children: ['Delete']
-                                                  .map((e) => InkWell(
-                                                        onTap: () async {
-                                                          await FirestoreMethods()
-                                                              .deletePost(widget
-                                                                      .snap[
-                                                                  'postId']);
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          widget.isOnPop == true
-                                                              ? setState(() {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                })
-                                                              : () {};
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 12,
-                                                                  horizontal:
-                                                                      16),
-                                                          child: Text(e),
-                                                        ),
-                                                      ))
-                                                  .toList(),
+                  )),
+                  widget.anon
+                      ? SizedBox()
+                      : user.uid == widget.snap["uid"]
+                          ? IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                          child: ListView(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
                                             ),
-                                          ));
-                                },
-                                icon: Icon(Icons.more_vert))
-                            : SizedBox()
-                  ],
-                ),
+                                            shrinkWrap: true,
+                                            children: ['Delete']
+                                                .map((e) => InkWell(
+                                                      onTap: () async {
+                                                        await FirestoreMethods()
+                                                            .deletePost(
+                                                                widget.snap[
+                                                                    'postId']);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        widget.isOnPop == true
+                                                            ? Navigator.pop(
+                                                                context)
+                                                            : () {};
+                                                      },
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 16),
+                                                        child: Text(e),
+                                                      ),
+                                                    ))
+                                                .toList(),
+                                          ),
+                                        ));
+                              },
+                              icon: Icon(Icons.more_vert))
+                          : SizedBox()
+                ],
               ),
             ),
-            GestureDetector(
-              onDoubleTap: () {
-                FirestoreMethods().likesPost(widget.snap['postId'], user.uid,
-                    widget.snap['likes'], widget.anon);
+          ),
+          GestureDetector(
+            onDoubleTap: () {
+              FirestoreMethods().likesPost(widget.snap['postId'], user.uid,
+                  widget.snap['likes'], widget.anon);
+              if (mounted) {
                 setState(() {
                   isLikeAnimating = true;
                 });
-              },
-              child: Stack(alignment: Alignment.center, children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  width: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.snap['postUrl'],
-                    fit: BoxFit.cover,
-                  ),
-                  //child: Image(image: snap),
+              }
+            },
+            child: Stack(alignment: Alignment.center, children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.35,
+                width: double.infinity,
+                child: CachedNetworkImage(
+                  imageUrl: widget.snap['postUrl'],
+                  fit: BoxFit.cover,
                 ),
-                AnimatedOpacity(
-                  opacity: isLikeAnimating ? 1 : 0,
+                //child: Image(image: snap),
+              ),
+              AnimatedOpacity(
+                opacity: isLikeAnimating ? 1 : 0,
+                duration: const Duration(
+                  milliseconds: 200,
+                ),
+                child: LikeAnimation(
+                  isAnimating: isLikeAnimating,
                   duration: const Duration(
-                    milliseconds: 200,
+                    milliseconds: 400,
                   ),
-                  child: LikeAnimation(
-                    isAnimating: isLikeAnimating,
-                    duration: const Duration(
-                      milliseconds: 400,
-                    ),
-                    onEnd: () {
+                  onEnd: () {
+                    if (mounted) {
                       setState(() {
                         isLikeAnimating = false;
                       });
-                    },
-                    child: const Icon(
-                      Icons.favorite,
-                      color: Colors.white,
-                      size: 100,
-                    ),
-                  ),
-                )
-              ]),
-            ),
-            Row(
-              children: [
-                LikeAnimation(
-                  isAnimating: widget.snap['likes'].contains(user.uid),
-                  child: IconButton(
-                    onPressed: () {
-                      FirestoreMethods().likesPost(widget.snap['postId'],
-                          user.uid, widget.snap['likes'], widget.anon);
-                    },
-                    icon: widget.snap['likes'].contains(user.uid)
-                        ? const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          )
-                        : const Icon(
-                            Icons.favorite,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CommentsScreen(
-                                postId: widget.snap['postId'],
-                              )),
-                    );
+                    }
                   },
-                  icon: const Icon(Icons.comment_outlined),
+                  child: const Icon(
+                    Icons.favorite,
+                    color: Colors.white,
+                    size: 100,
+                  ),
                 ),
-              ],
-            ),
-            // caption and comments
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    DefaultTextStyle(
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle2!
-                          .copyWith(fontWeight: FontWeight.w800),
-                      child: Text(
-                        '${widget.snap['likes'].length} likes',
-                        style: Theme.of(context).textTheme.bodyText2,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(top: 8),
-                      child: RichText(
-                        text: TextSpan(
-                            style: const TextStyle(color: primaryColor),
-                            children: [
-                              TextSpan(
-                                text:
-                                    widget.anon ? "Anonymous" : user1!.username,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              TextSpan(
-                                text: ' ${widget.snap['description']}',
-                                // style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ]),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CommentsScreen(
-                                    postId: widget.snap['postId'],
-                                  )),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          style: const TextStyle(
-                              fontSize: 16, color: secondaryColor),
-                          'view all $commentLen comments',
+              )
+            ]),
+          ),
+          Row(
+            children: [
+              LikeAnimation(
+                isAnimating: widget.snap['likes'].contains(user.uid),
+                child: IconButton(
+                  onPressed: () {
+                    FirestoreMethods().likesPost(widget.snap['postId'],
+                        user.uid, widget.snap['likes'], widget.anon);
+                  },
+                  icon: widget.snap['likes'].contains(user.uid)
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(
+                          Icons.favorite,
+                          color: Colors.white,
                         ),
-                      ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CommentsScreen(
+                              postId: widget.snap['postId'],
+                            )),
+                  );
+                },
+                icon: const Icon(Icons.comment_outlined),
+              ),
+            ],
+          ),
+          // caption and comments
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DefaultTextStyle(
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(fontWeight: FontWeight.w800),
+                    child: Text(
+                      '${widget.snap['likes'].length} likes',
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
-                    Container(
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(top: 8),
+                    child: RichText(
+                      text: TextSpan(
+                          style: const TextStyle(color: primaryColor),
+                          children: [
+                            TextSpan(
+                              text: widget.anon ? "Anonymous" : user1.username,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: ' ${widget.snap['description']}',
+                              // style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CommentsScreen(
+                                  postId: widget.snap['postId'],
+                                )),
+                      );
+                    },
+                    child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Text(
-                          style: const TextStyle(
-                              fontSize: 16, color: secondaryColor),
-                          DateFormat.yMMMd()
-                              .format(widget.snap['datePublished'].toDate())),
+                        style: const TextStyle(
+                            fontSize: 16, color: secondaryColor),
+                        'view all $commentLen comments',
+                      ),
                     ),
-                  ]),
-            )
-          ],
-        ),
-      );
-    } else {
-      return Center(
-        child: LinearProgressIndicator(),
-      );
-    }
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                        style: const TextStyle(
+                            fontSize: 16, color: secondaryColor),
+                        DateFormat.yMMMd()
+                            .format(widget.snap['datePublished'].toDate())),
+                  ),
+                ]),
+          )
+        ],
+      ),
+    );
   }
 }

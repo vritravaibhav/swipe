@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 import '../Resources/auth_methods.dart';
 import '../Resources/firestore_methods.dart';
@@ -26,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int followers = 0;
   int following = 0;
   bool isFollowing = false;
-  bool isLoading = false;
+  bool isLoading = true;
 
   final TextEditingController _name = TextEditingController();
   TextEditingController _bio = TextEditingController();
@@ -38,9 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   getData() async {
-    setState(() {
-      isLoading = true;
-    });
+    print(widget.uid);
     try {
       var userSnap = await FirebaseFirestore.instance
           .collection('users')
@@ -64,9 +64,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
-    setState(() {
-      isLoading = false;
-    });
+
+    isLoading = false;
   }
 
   onSend(BuildContext context) {
@@ -90,25 +89,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
-  editname(BuildContext context) {
-    //
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Enter your new name"),
-            children: [
-              TextField(
-                controller: _name,
-                decoration: InputDecoration(),
-              )
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
+    //  print(FirebaseAuth.instance.currentUser!.uid == userData["uid"]);
+    final x = Provider.of<TypeProvdier>(context);
     return isLoading
         ? const Center(
             child: CircularProgressIndicator(),
@@ -162,6 +146,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   .update(
                                                       {"username": _name.text});
                                               Navigator.pop(context);
+                                              await getData();
+                                              x.hearing();
                                             },
                                           ),
                                         ],
@@ -227,6 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             borderColor: Colors.grey,
                                             function: () async {
                                               await AuthMethods().signOut();
+
                                               Navigator.of(context)
                                                   .pushReplacement(
                                                 MaterialPageRoute(
@@ -352,13 +339,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               return InkWell(
                                 onTap: () {
                                   showDialog(
-                                      //  contentPadding: EdgeInsets.zero,
+                                      //contentPadding: EdgeInsets.zero,
                                       context: context,
                                       builder: (context) {
                                         return SimpleDialog(
-                                          //  insetPadding: EdgeInsets.all(0),
+                                          insetPadding: EdgeInsets.all(0),
                                           contentPadding: EdgeInsets.all(0),
-                                          // title: const Text("Create a post"),
                                           children: [
                                             PostCard(
                                                 snap: snap,

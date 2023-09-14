@@ -1,22 +1,30 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/widget/receiver_row_view.dart';
 import 'package:instagramclone/widget/sender_row_view.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../models/user.dart' as model;
 
-class ChatPage extends StatefulWidget {
+class ChatPagePersonal extends StatefulWidget {
   List<dynamic>? messages = [];
+  final snap;
+
+  ChatPagePersonal({
+    Key? key,
+    this.snap,
+  }) : super(key: key);
   @override
-  _ChatPageState createState() => _ChatPageState();
+  _ChatPagePersonalState createState() => _ChatPagePersonalState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPagePersonalState extends State<ChatPagePersonal> {
   final TextEditingController _messageController = TextEditingController();
 
   //  z=  FirebaseFirestore.instance.collection('users').doc('GlobalChat').get(chat(['address', 'postcode']));
@@ -32,37 +40,36 @@ class _ChatPageState extends State<ChatPage> {
 
   bool goodies = true;
   bool userAccess = false;
+
   model.User? user;
 
- 
-
   Future<void> vaibhav() async {
-    // });
-    // await Future.delayed(const Duration(seconds: 2));
     await FirebaseFirestore.instance
-        .collection('users')
-        .doc("GlobalChat")
+        .collection('chats')
+        .doc(widget.snap)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         x = documentSnapshot.data();
         widget.messages = x["Chat"];
 
-        // print("pragma");
         goodies = false;
       }
     });
+
+    //widget.messages = widget.snap['chat'];
     if (!userAccess) {
       user =
           await AuthMethods().getUser(FirebaseAuth.instance.currentUser!.uid);
       userAccess = true;
     }
     isLoading = true;
+
     setState(() {});
   }
 
   void sendMessage() {
-    FirebaseFirestore.instance.collection("users").doc("GlobalChat").update({
+    FirebaseFirestore.instance.collection("chats").doc(widget.snap).update({
       "Chat": FieldValue.arrayUnion([
         {
           "chatData": _messageController.text,
@@ -78,21 +85,14 @@ class _ChatPageState extends State<ChatPage> {
   ScrollController _scrollController = new ScrollController();
   @override
   Widget build(BuildContext context) {
-    //  var m = Provider.of<TypeProvdier>(context).messages;
     if (goodies) {
       FirebaseFirestore.instance
-          .collection('users')
-          .doc("GlobalChat")
+          .collection('chats')
+          .doc(widget.snap)
           .snapshots()
           .listen((event) {
-        //List<dynamic> manoj = [];
-        // manoj = event.data()!["Chat"];
-
-        // vaibhav();
         print("loove");
         vaibhav();
-
-        //  print(widget.messages.length);
       });
     }
     goodies = true;
