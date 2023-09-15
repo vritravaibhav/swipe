@@ -38,35 +38,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      var userSnap = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .get();
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        var userSnap = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.uid)
+            .get();
 
-      // get post lENGTH
-      var postSnap = await FirebaseFirestore.instance
-          .collection('posts')
-          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-          .get();
+        // get post lENGTH
+        var postSnap = await FirebaseFirestore.instance
+            .collection('posts')
+            .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .get();
 
-      postLen = postSnap.docs.length;
-      userData = userSnap.data()!;
-      followers = userSnap.data()!['followers'].length;
-      following = userSnap.data()!['following'].length;
-      isFollowing = userSnap
-          .data()!['followers']
-          .contains(FirebaseAuth.instance.currentUser!.uid);
-      setState(() {});
-    } catch (e) {
-      showSnackBar(e.toString(), context);
+        postLen = postSnap.docs.length;
+        userData = userSnap.data()!;
+        followers = userSnap.data()!['followers'].length;
+        following = userSnap.data()!['following'].length;
+        isFollowing = userSnap
+            .data()!['followers']
+            .contains(FirebaseAuth.instance.currentUser!.uid);
+        setState(() {});
+      } catch (e) {
+        showSnackBar(e.toString(), context);
+      }
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   onSend(BuildContext context) {
@@ -106,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -369,7 +371,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           );
-
                   },
                 )
               ],

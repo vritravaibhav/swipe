@@ -85,7 +85,7 @@ class _PostCardState extends State<PostCard> {
                               : CachedNetworkImage(
                                   fit: BoxFit.cover,
                                   imageUrl: widget.snap['profImage'].toString())
-                          : Icon(Icons.person),
+                          : const Icon(Icons.person),
                     ),
                   ),
                   Expanded(
