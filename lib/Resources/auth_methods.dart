@@ -89,7 +89,7 @@ class AuthMethods {
 
   Future<void> signOut() async {
     await _auth.signOut();
-    await GoogleSignIn().disconnect();
+    await GoogleSignIn().signOut();
   }
 
   Future<String> signInWithGoogle() async {
@@ -116,25 +116,29 @@ class AuthMethods {
     User? googlesUser = cred.user;
     model.User user = model.User(
         email: googlesUser!.email.toString(),
-        uid: cred.user!.uid,
+        uid: FirebaseAuth.instance.currentUser!.uid,
         photoUrl: googlesUser.photoURL.toString(),
         username: googlesUser.displayName.toString(),
         bio: "",
         followers: [],
         following: []);
-    //var m = user.toJson();
 
-    try {
-      await _firestore
-          .collection('users')
-          .doc(cred.user!.uid)
-          .update({"uid": cred.user!.uid});
-    } catch (e) {
-      await _firestore
-          .collection('users')
-          .doc(cred.user!.uid)
-          .set(user.toJson());
-    }
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        // print('Document data: ${documentSnapshot.data()}');
+      } else {
+        await _firestore
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(user.toJson());
+      }
+    });
+
+    try {} catch (e) {}
 
     return "good";
   }

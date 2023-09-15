@@ -23,20 +23,29 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     addData();
   }
 
+  bool userdata = false;
   addData() async {
     UserProvider _userprovider = Provider.of(context, listen: false);
     await _userprovider.refreshUser();
+    userdata = true;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: ((context, constraints) {
-      if (constraints.maxWidth > webScreenSize) {
-        //web screen
-        return widget.WebScreenLayout;
-      }
-      //Mobile  screen
-      return widget.MobileScreenLayout;
-    }));
+    if (userdata) {
+      return LayoutBuilder(builder: ((context, constraints) {
+        if (constraints.maxWidth > webScreenSize) {
+          //web screen
+          return widget.WebScreenLayout;
+        }
+        //Mobile  screen
+        return widget.MobileScreenLayout;
+      }));
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 }

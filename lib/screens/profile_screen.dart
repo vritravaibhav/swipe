@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 import '../Resources/auth_methods.dart';
 import '../Resources/firestore_methods.dart';
@@ -26,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int followers = 0;
   int following = 0;
   bool isFollowing = false;
-  bool isLoading = false;
+  bool isLoading = true;
 
   final TextEditingController _name = TextEditingController();
   TextEditingController _bio = TextEditingController();
@@ -38,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   getData() async {
+
     if (mounted) {
       setState(() {
         isLoading = true;
@@ -69,6 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         isLoading = false;
       });
     }
+
+    isLoading = false;
   }
 
   onSend(BuildContext context) {
@@ -108,9 +113,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
-
+  
   @override
   Widget build(BuildContext context) {
+    //  print(FirebaseAuth.instance.currentUser!.uid == userData["uid"]);
+    final x = Provider.of<TypeProvdier>(context);
     return isLoading
         ? const Center(
             child: CircularProgressIndicator(),
@@ -164,6 +171,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   .update(
                                                       {"username": _name.text});
                                               Navigator.pop(context);
+                                              await getData();
+                                              x.hearing();
                                             },
                                           ),
                                         ],
@@ -229,6 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             borderColor: Colors.grey,
                                             function: () async {
                                               await AuthMethods().signOut();
+
                                               Navigator.of(context)
                                                   .pushReplacement(
                                                 MaterialPageRoute(
@@ -327,7 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .where('uid', isEqualTo: widget.uid)
                       .get(),
                   builder: (context, snapshot) {
-                    print("$snapshot ssddda");
+                    //  print("$snapshot ssddda");
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -351,9 +361,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             itemBuilder: (context, index) {
                               DocumentSnapshot snap =
                                   (snapshot.data! as dynamic).docs[index];
-                              return CachedNetworkImage(
-                                imageUrl: snap['postUrl'],
-                                fit: BoxFit.cover,
+                              return InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      //contentPadding: EdgeInsets.zero,
+                                      context: context,
+                                      builder: (context) {
+                                        return SimpleDialog(
+                                          insetPadding: EdgeInsets.all(0),
+                                          contentPadding: EdgeInsets.all(0),
+                                          children: [
+                                            PostCard(
+                                                snap: snap,
+                                                anon: false,
+                                                isOnPop: true)
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: CachedNetworkImage(
+                                  imageUrl: snap['postUrl'],
+                                  fit: BoxFit.cover,
+                                ),
                               );
                             },
                           )

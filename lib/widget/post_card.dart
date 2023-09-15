@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
 import 'package:instagramclone/models/user.dart';
 import 'package:instagramclone/providers/UserProvider.dart';
+import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/screens/comments_screeens.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/widget/like_animation.dart';
@@ -29,12 +31,17 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
   int commentLen = 0;
+
   @override
   void initState() {
     super.initState();
-    getComments();
-    print(widget.snap);
+    // getUsers(widget.snap);
+    // getComments();
+
+    // print(widget.snap);
   }
+
+  bool isLoading = false;
 
   getComments() async {
     QuerySnapshot snap = await FirebaseFirestore.instance
@@ -43,12 +50,40 @@ class _PostCardState extends State<PostCard> {
         .collection('comments')
         .get();
     commentLen = snap.docs.length;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
+  bool ishearing = false;
+  bool callGetUser = false;
+  bool user1flag = false;
+  late User user1;
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
+    final x = Provider.of<TypeProvdier>(context);
+    if (!user1flag) {
+      user1 = x.userx;
+      user1flag = true;
+    }
+
+    Future<User> getUsers(var snap) async {
+      user1 = await AuthMethods().getUser(widget.snap["uid"]);
+      if (!ishearing) {
+        x.hearing();
+        ishearing = true;
+      }
+
+      return user1;
+    }
+
+    if (!callGetUser) {
+      getUsers(widget.snap);
+      print("called");
+      callGetUser = true;
+    }
+
     return Container(
       color: !widget.anon ? mobileBackgroundColor : Colors.brown,
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -68,7 +103,6 @@ class _PostCardState extends State<PostCard> {
                                   uid: widget.snap["uid"],
                                 )),
                       );
-                print("good");
               },
               child: Row(
                 children: [
@@ -83,9 +117,11 @@ class _PostCardState extends State<PostCard> {
                                   imageUrl:
                                       'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
                               : CachedNetworkImage(
+
                                   fit: BoxFit.cover,
                                   imageUrl: widget.snap['profImage'].toString())
                           : const Icon(Icons.person),
+
                     ),
                   ),
                   Expanded(
@@ -94,7 +130,7 @@ class _PostCardState extends State<PostCard> {
                       left: 8,
                     ),
                     child: Text(
-                      widget.anon ? "Anonymous" : widget.snap['username'],
+                      widget.anon ? "Anonymous" : user1.username,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -123,9 +159,8 @@ class _PostCardState extends State<PostCard> {
                                                         Navigator.of(context)
                                                             .pop();
                                                         widget.isOnPop == true
-                                                            ? Navigator.of(
-                                                                    context)
-                                                                .pop()
+                                                            ? Navigator.pop(
+                                                                context)
                                                             : () {};
                                                       },
                                                       child: Container(
@@ -151,9 +186,11 @@ class _PostCardState extends State<PostCard> {
             onDoubleTap: () {
               FirestoreMethods().likesPost(widget.snap['postId'], user.uid,
                   widget.snap['likes'], widget.anon);
-              setState(() {
-                isLikeAnimating = true;
-              });
+              if (mounted) {
+                setState(() {
+                  isLikeAnimating = true;
+                });
+              }
             },
             child: Stack(alignment: Alignment.center, children: [
               SizedBox(
@@ -176,9 +213,11 @@ class _PostCardState extends State<PostCard> {
                     milliseconds: 400,
                   ),
                   onEnd: () {
-                    setState(() {
-                      isLikeAnimating = false;
-                    });
+                    if (mounted) {
+                      setState(() {
+                        isLikeAnimating = false;
+                      });
+                    }
                   },
                   child: const Icon(
                     Icons.favorite,
@@ -248,9 +287,7 @@ class _PostCardState extends State<PostCard> {
                           style: const TextStyle(color: primaryColor),
                           children: [
                             TextSpan(
-                              text: widget.anon
-                                  ? "Anonymous"
-                                  : widget.snap['username'],
+                              text: widget.anon ? "Anonymous" : user1.username,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),

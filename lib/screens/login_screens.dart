@@ -47,6 +47,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void googleSignIn() async {
+    await AuthMethods().signInWithGoogle();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => const ResponsiveLayout(
+        WebScreenLayout: WebScreenLayout(),
+        MobileScreenLayout: MobileScreenLayout(),
+      ),
+    ));
+  }
+
   void navigateToSignUp() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const SignupScreen()));
@@ -112,8 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 12,
           ),
           InkWell(
-            onTap: () async {
-              await AuthMethods().signInWithGoogle();
+            onTap: () {
+              googleSignIn();
             },
             child: Container(
                 // color: blueColor,
