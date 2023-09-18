@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/providers/UserProvider.dart';
+import 'package:instagramclone/providers/post_provider.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/responsive/responsive_layout_screen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => TypeProvdier()),
+        ChangeNotifierProvider(create: (_) => PostProvider()),
       ],
       child: MaterialApp(
         title: 'Instagram clone',
@@ -48,6 +50,7 @@ class MyApp extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.hasData) {
+                  Provider.of<UserProvider>(context).refreshUser();
                   return const ResponsiveLayout(
                       WebScreenLayout: WebScreenLayout(),
                       MobileScreenLayout: MobileScreenLayout());

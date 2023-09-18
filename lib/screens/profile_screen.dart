@@ -40,21 +40,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    print(widget.uid);
-    try {
-      var userSnap = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .get();
 
-      // get post lENGTH
-      var postSnap = await FirebaseFirestore.instance
-          .collection('posts')
-          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-          .get();
+
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        var userSnap = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.uid)
+            .get();
 
       postLen = postSnap.docs.length;
       userData = userSnap.data()!;
@@ -68,6 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {});
     } catch (e) {
       showSnackBar(e.toString(), context);
+
     }
 
     setState(() {
@@ -96,6 +93,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
+  editname(BuildContext context) {
+    //
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Enter your new name"),
+            children: [
+              TextField(
+                controller: _name,
+                decoration: InputDecoration(),
+              )
+            ],
+          );
+        });
+  }
+  
   @override
   Widget build(BuildContext context) {
     //  print(FirebaseAuth.instance.currentUser!.uid == userData["uid"]);
