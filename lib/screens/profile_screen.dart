@@ -40,17 +40,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   getData() async {
-
-
     if (mounted) {
       setState(() {
         isLoading = true;
       });
-      try {
-        var userSnap = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(widget.uid)
-            .get();
+    }
+    try {
+      var userSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+      var postSnap = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .get();
 
       postLen = postSnap.docs.length;
       userData = userSnap.data()!;
@@ -64,7 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {});
     } catch (e) {
       showSnackBar(e.toString(), context);
-
     }
 
     setState(() {
@@ -109,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     //  print(FirebaseAuth.instance.currentUser!.uid == userData["uid"]);
