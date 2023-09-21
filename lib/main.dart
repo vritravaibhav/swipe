@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.hasData) {
-                  Provider.of<UserProvider>(context).refreshUser();
                   return const ResponsiveLayout(
                       WebScreenLayout: WebScreenLayout(),
                       MobileScreenLayout: MobileScreenLayout());

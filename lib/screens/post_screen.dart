@@ -330,18 +330,28 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       ),
                     ),
                     const SizedBox(height: 100),
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 171, 181, 189),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Text(
-                          'Tweet it..',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        FirestoreMethods().uploadTweets(
+                          _tweetController.text,
+                        );
+                        Navigator.pop(context);
+                        showSnackBar("Successfully Tweeted", context);
+                        _tweetController.clear();
+                      },
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 171, 181, 189),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            'Tweet it..',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     )
