@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
 import 'package:provider/provider.dart';
 
-import '../models/user.dart';
+import '../models/user.dart' as model;
 import '../providers/UserProvider.dart';
 
 class TweetScreen extends StatefulWidget {
@@ -14,11 +15,13 @@ class TweetScreen extends StatefulWidget {
 }
 
 class _TweetScreenState extends State<TweetScreen> {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<UserProvider>(context).getUser;
+    //  final model.User user = Provider.of<UserProvider>(context).getUser;
     CollectionReference Anons =
         FirebaseFirestore.instance.collection('AnonymousTweets');
+    //  print("good");
 
     return StreamBuilder<QuerySnapshot>(
       stream: Anons.orderBy('datePublished', descending: true).snapshots(),
@@ -62,12 +65,12 @@ class _TweetScreenState extends State<TweetScreen> {
                     children: [
                       IconButton(
                           onPressed: () {
-                            FirestoreMethods().likesTweet(
-                                data['docId'], user.uid, data['likes']);
+                            FirestoreMethods()
+                                .likesTweet(data['docId'], uid, data['likes']);
                           },
                           icon: Icon(
                             Icons.favorite,
-                            color: data["likes"].contains(user.uid)
+                            color: data["likes"].contains(uid)
                                 ? Colors.red
                                 : Colors.white,
                           )),

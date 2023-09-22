@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/providers/UserProvider.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/global_variable.dart';
@@ -91,8 +92,8 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   Widget build(BuildContext context) {
     // model.User user = Provider.of<UserProvider>(context).getUse;
 
-    // Provider.of<TypeProvdier>(context, listen: true).vaibhav();
-    print(FirebaseAuth.instance.currentUser!.uid + " hosanna jab se");
+    //Provider.of<UserProvider>(context, listen: false).getUser;
+    //  print(FirebaseAuth.instance.currentUser!.uid + " hosanna jab se");
     return Scaffold(
       body: PageView(
         controller: pageController,
