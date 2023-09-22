@@ -52,7 +52,8 @@ class AuthMethods {
             username: username,
             bio: bio!,
             followers: [],
-            following: []);
+            following: [],
+            matched: []);
         //var m = user.toJson();
 
         await _firestore
@@ -121,7 +122,8 @@ class AuthMethods {
         username: googlesUser.displayName.toString(),
         bio: "",
         followers: [],
-        following: []);
+        following: [],
+        matched: []);
 
     FirebaseFirestore.instance
         .collection('users')

@@ -8,6 +8,7 @@ class User {
   final String bio;
   final List followers;
   final List following;
+  final List matched;
 
   User({
     required this.email,
@@ -18,6 +19,7 @@ class User {
     // required this.email,
     required this.followers,
     required this.following,
+    required this.matched,
   });
   Map<String, dynamic> toJson() => {
         "username": username,
@@ -26,19 +28,23 @@ class User {
         "photoUrl": photoUrl,
         "bio": bio,
         "followers": followers,
-        "following": following
+        "following": following,
+        "matched": matched
       };
 
   static User fromSnap(DocumentSnapshot snap) {
-      var snapshot = snap.data() as Map<String, dynamic>;
-    
+    // print(snap);
+    var snapshot = snap.data()! as Map<String, dynamic>;
+
     return User(
-        email: snapshot['email'],
-        uid: snapshot['uid'],
-        photoUrl: snapshot['photoUrl'],
-        username: snapshot['username'],
-        bio: snapshot['bio'],
-        followers: snapshot['followers'],
-        following: snapshot['following']);
+      email: snapshot['email'],
+      uid: snapshot['uid'],
+      photoUrl: snapshot['photoUrl'],
+      username: snapshot['username'],
+      bio: snapshot['bio'],
+      followers: snapshot['followers'],
+      following: snapshot['following'],
+      matched: snapshot['matched'],
+    );
   }
 }
