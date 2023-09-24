@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -50,7 +51,6 @@ class MyApp extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.hasData) {
-                  Provider.of<UserProvider>(context).refreshUser();
                   return const ResponsiveLayout(
                       WebScreenLayout: WebScreenLayout(),
                       MobileScreenLayout: MobileScreenLayout());

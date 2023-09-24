@@ -2,11 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import 'package:instagramclone/Resources/auth_methods.dart';
-import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/widget/receiver_row_view.dart';
 import 'package:instagramclone/widget/sender_row_view.dart';
 
@@ -15,10 +12,12 @@ import '../models/user.dart' as model;
 class ChatPagePersonal extends StatefulWidget {
   List<dynamic>? messages = [];
   final snap;
+  final user;
 
   ChatPagePersonal({
     Key? key,
-    this.snap,
+    required this.snap,
+    required this.user,
   }) : super(key: key);
   @override
   _ChatPagePersonalState createState() => _ChatPagePersonalState();
@@ -64,8 +63,9 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
       userAccess = true;
     }
     isLoading = true;
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void sendMessage() {
@@ -98,14 +98,12 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
     goodies = true;
 
     if (!isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     } else {
       return Scaffold(
-        appBar: AppBar(
-          title: Text('Chat App'),
-        ),
+        appBar: AppBar(title: Text(user!.username)),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -133,14 +131,14 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: TextField(
                         controller: _messageController,
                         maxLines: null,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Type a message...',
                         ),
                       ),
@@ -148,7 +146,7 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
                     //
 
                     IconButton(
-                      icon: Icon(Icons.send),
+                      icon: const Icon(Icons.send),
                       onPressed: () {
                         if (_messageController.text.isNotEmpty) {
                           sendMessage();
