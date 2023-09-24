@@ -25,30 +25,46 @@ class SenderRowView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Wrap(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                        left: 8.0, right: 5.0, top: 8.0, bottom: 2.0),
-                    padding: const EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 9.0, bottom: 9.0),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: Colors.blue,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10.0))
-                                .copyWith(topRight: Radius.zero)),
-                    child: Text(
-                      senderMessage['chatData'],
-                      textAlign: TextAlign.left,
+              GestureDetector(
+                onTap: () {
+                  print(senderMessage["datetime"].toDate().weekday);
+                },
+                child: Wrap(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                          left: 8.0, right: 5.0, top: 8.0, bottom: 2.0),
+                      padding: const EdgeInsets.only(
+                          left: 5.0, right: 5.0, top: 9.0, bottom: 9.0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.blue,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10.0))
+                                  .copyWith(topRight: Radius.zero)),
+                      child: Text(
+                        senderMessage['chatData'],
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
                 margin: const EdgeInsets.only(right: 10.0, bottom: 8.0),
                 child: Text(
-                  DateFormat.jm().format(senderMessage["datetime"].toDate()),
+                  DateTime.now().weekday ==
+                          senderMessage["datetime"].toDate().weekday
+                      ? DateFormat.jm()
+                          .format(senderMessage["datetime"].toDate())
+                          .toString()
+                      : DateFormat('dd/MM/yy')
+                              .format(senderMessage["datetime"].toDate())
+                              .toString() +
+                          ", " +
+                          DateFormat.jm()
+                              .format(senderMessage["datetime"].toDate())
+                              .toString(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 9.0,

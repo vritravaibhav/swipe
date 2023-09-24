@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/auth_methods.dart';
-import 'package:instagramclone/utils/global_variable.dart';
 
 import '../models/user.dart';
 import '../screens/chatScreenPersonal.dart';
@@ -30,7 +29,6 @@ class _ChatTileState extends State<ChatTile> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getUser();
   }
@@ -38,7 +36,7 @@ class _ChatTileState extends State<ChatTile> {
   @override
   Widget build(BuildContext context) {
     if (!isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     } else {

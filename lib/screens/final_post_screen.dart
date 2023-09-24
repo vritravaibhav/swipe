@@ -27,23 +27,26 @@ class FinalPostPage extends StatelessWidget {
         title: const Text("Post to"),
         centerTitle: false,
         actions: [
-          TextButton(
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                context.read<PostProvider>().postImage(
-                    context: context,
-                    uid: user.uid,
-                    username: user.username,
-                    profImage: user.photoUrl,
-                    isAnonymous: isAnonymous);
-              },
-              child: const Text(
-                'Post',
-                style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: TextButton(
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  context.read<PostProvider>().postImage(
+                      context: context,
+                      uid: user.uid,
+                      username: user.username,
+                      profImage: user.photoUrl,
+                      isAnonymous: isAnonymous);
+                },
+                child: const Text(
+                  'Post >',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                )),
+          )
         ],
       ),
       body: Column(children: [

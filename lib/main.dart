@@ -9,7 +9,7 @@ import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/responsive/responsive_layout_screen.dart';
 import 'package:instagramclone/responsive/web_screen_layout.dart';
 import 'package:instagramclone/screens/login_screens.dart';
-import 'package:instagramclone/screens/signup_screen.dart';
+import 'package:instagramclone/screens/onboarding.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:provider/provider.dart';
 
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PostProvider()),
       ],
       child: MaterialApp(
-        title: 'Instagram clone',
+        title: 'Swipe',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark()
             .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               }
-              return LoginScreen();
+              return const OnBoardingScreen();
             }),
       ),
     );
