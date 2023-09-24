@@ -73,10 +73,21 @@ class ReceiverRowView extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 10.0, bottom: 8.0),
                 child: Text(
-                  DateFormat.jm().format(receiverMessage["datetime"].toDate()),
+                  DateTime.now().weekday ==
+                          receiverMessage["datetime"].toDate().weekday
+                      ? DateFormat.jm()
+                          .format(receiverMessage["datetime"].toDate())
+                          .toString()
+                      : DateFormat('dd/MM/yy')
+                              .format(receiverMessage["datetime"].toDate())
+                              .toString() +
+                          ", " +
+                          DateFormat.jm()
+                              .format(receiverMessage["datetime"].toDate())
+                              .toString(),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 7.0,
+                    fontSize: 8.0,
                   ),
                 ),
               ),

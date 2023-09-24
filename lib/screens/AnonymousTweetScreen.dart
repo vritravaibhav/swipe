@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
-import 'package:provider/provider.dart';
 
 import '../models/user.dart' as model;
-import '../providers/UserProvider.dart';
 
 class TweetScreen extends StatefulWidget {
   const TweetScreen({super.key});
@@ -27,11 +25,11 @@ class _TweetScreenState extends State<TweetScreen> {
       stream: Anons.orderBy('datePublished', descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return const Text('Something went wrong');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -41,7 +39,7 @@ class _TweetScreenState extends State<TweetScreen> {
             Map<String, dynamic> data =
                 document.data()! as Map<String, dynamic>;
             return Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               color: Colors.black,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,10 +50,10 @@ class _TweetScreenState extends State<TweetScreen> {
                       borderRadius: BorderRadius.circular(7),
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     child: Text(
                       data["tweet"],
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 22,
                           color: Colors.blue,
                           fontWeight: FontWeight.bold),
@@ -80,8 +78,9 @@ class _TweetScreenState extends State<TweetScreen> {
                               Text("${data["likes"].length.toString()} Likes"))
                     ],
                   ),
-                  Divider(
+                  const Divider(
                     color: Colors.white,
+                    thickness: 2,
                   )
                 ],
               ),

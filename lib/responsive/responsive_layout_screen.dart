@@ -28,7 +28,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     UserProvider _userprovider = Provider.of(context, listen: false);
     await _userprovider.refreshUser();
     userdata = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -43,7 +45,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
         return widget.MobileScreenLayout;
       }));
     } else {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }

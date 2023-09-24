@@ -26,11 +26,16 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
   bool isLoading = false;
-  bool uploadScreen = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final model.FirebaseAuth _auth = model.FirebaseAuth.instance;
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _tweetController = TextEditingController();
+
+  void clearImage() {
+    setState(() {
+      _file = null;
+    });
+  }
 
   void postImage(
       String uid, String username, String profImage, bool isAnonymous) async {
@@ -110,60 +115,52 @@ class _AddPostScreenState extends State<AddPostScreen> {
   //       });
   // }
 
-  void clearImage() {
-    setState(() {
-      uploadScreen = false;
-      _file = null;
-    });
-  }
-
-  void anonymoustweet() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: const Text("Tweet Anonimously"),
-            children: [
-              Container(
-                height: 200,
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: TextField(
-                      textCapitalization: TextCapitalization.sentences,
-                      textAlignVertical: TextAlignVertical.center,
-                      expands: true,
-                      //keyboardType: TextInputType.,
-                      maxLines: null,
-
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                      controller: _tweetController,
-                      //decoration: InputDecoration(),
-                    ),
-                  ),
-                ),
-              ),
-              TextButton(
-                  onPressed: () async {
-                    FirestoreMethods().uploadTweets(
-                      _tweetController.text,
-                    );
-                    Navigator.pop(context);
-                    showSnackBar("Successfully Tweeted", context);
-                    _tweetController.clear();
-                  },
-                  child: const Text(
-                    "Tweet",
-                    style: TextStyle(
-                        letterSpacing: Checkbox.width,
-                        fontSize: Checkbox.width),
-                  )),
-            ],
-          );
-        });
-  }
+  // void anonymoustweet() async {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return SimpleDialog(
+  //           title: const Text("Tweet Anonimously"),
+  //           children: [
+  //             Container(
+  //               height: 200,
+  //               color: Colors.white,
+  //               child: Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: Center(
+  //                   child: TextField(
+  //                     textCapitalization: TextCapitalization.sentences,
+  //                     textAlignVertical: TextAlignVertical.center,
+  //                     expands: true,
+  //                     //keyboardType: TextInputType.,
+  //                     maxLines: null,
+  //                     style: const TextStyle(
+  //                         color: Colors.black, fontWeight: FontWeight.bold),
+  //                     controller: _tweetController,
+  //                     //decoration: InputDecoration(),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             TextButton(
+  //                 onPressed: () async {
+  //                   FirestoreMethods().uploadTweets(
+  //                     _tweetController.text,
+  //                   );
+  //                   Navigator.pop(context);
+  //                   showSnackBar("Successfully Tweeted", context);
+  //                   _tweetController.clear();
+  //                 },
+  //                 child: const Text(
+  //                   "Tweet",
+  //                   style: TextStyle(
+  //                       letterSpacing: Checkbox.width,
+  //                       fontSize: Checkbox.width),
+  //                 )),
+  //           ],
+  //         );
+  //       });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -310,13 +307,32 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20, left: 18, bottom: 20),
-                      child: Text(
-                        'Anonymous Tweet',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding:
+                              EdgeInsets.only(top: 20, left: 18, bottom: 20),
+                          child: Text(
+                            'Anonymous Tweet',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: TextButton(
+                            onPressed: () {
+                              FirestoreMethods().uploadTweets(
+                                _tweetController.text,
+                              );
+                              showSnackBar("Successfully Tweeted", context);
+                              _tweetController.clear();
+                            },
+                            child: const Text('Post >'),
+                          ),
+                        )
+                      ],
                     ),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.3,
@@ -329,31 +345,31 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             hintText: 'Confess your thought...'),
                       ),
                     ),
-                    const SizedBox(height: 100),
-                    GestureDetector(
-                      onTap: () {
-                        FirestoreMethods().uploadTweets(
-                          _tweetController.text,
-                        );
-                        showSnackBar("Successfully Tweeted", context);
-                        _tweetController.clear();
-                      },
-                      child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 171, 181, 189),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text(
-                            'Tweet it..',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    )
+                    // const SizedBox(height: 100),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     FirestoreMethods().uploadTweets(
+                    //       _tweetController.text,
+                    //     );
+                    //     showSnackBar("Successfully Tweeted", context);
+                    //     _tweetController.clear();
+                    //   },
+                    //   child: Center(
+                    //     child: Container(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 20, vertical: 10),
+                    //       decoration: BoxDecoration(
+                    //         color: const Color.fromARGB(255, 171, 181, 189),
+                    //         borderRadius: BorderRadius.circular(8),
+                    //       ),
+                    //       child: const Text(
+                    //         'Tweet it..',
+                    //         style: TextStyle(
+                    //             fontSize: 20, fontWeight: FontWeight.bold),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
                 const PostWidget(
@@ -468,15 +484,18 @@ class PostWidget extends StatelessWidget {
               ),
             ),
             context.watch<PostProvider>().image != null
-                ? TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FinalPostPage(isAnonymous: isAnonymous)));
-                    },
-                    child: const Text('Next'),
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    FinalPostPage(isAnonymous: isAnonymous)));
+                      },
+                      child: const Text('Next >'),
+                    ),
                   )
                 : Container(),
           ],

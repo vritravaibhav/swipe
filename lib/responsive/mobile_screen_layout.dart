@@ -1,12 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:instagramclone/providers/UserProvider.dart';
-import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/utils/colors.dart';
-import 'package:instagramclone/utils/global_variable.dart';
-import 'package:provider/provider.dart';
-
 import '../screens/GlobalNotification.dart';
 import '../screens/feed_screen.dart';
 import '../screens/post_screen.dart';
@@ -99,8 +94,8 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         controller: pageController,
         onPageChanged: onPageChanged,
         children: [
-          FeedScreen(),
-          SearchScreen(),
+          const FeedScreen(),
+          const SearchScreen(),
           const AddPostScreen(),
           const GlobalNotification(),
           ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid)

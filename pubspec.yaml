@@ -47,9 +47,9 @@ dependencies:
   uuid: ^4.0.0
   cached_network_image: 
   intl4x: 
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
 
@@ -67,6 +67,7 @@ flutter:
     - assets/ic_instagram.svg
     - assets/weetlogo.jpg
     - assets/anonymousman.jpg
+    - assets/lottie/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
