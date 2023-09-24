@@ -326,7 +326,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         maxLines: null,
                         decoration: const InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Write your thought...'),
+                            hintText: 'Confess your thought...'),
                       ),
                     ),
                     const SizedBox(height: 100),
@@ -335,7 +335,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         FirestoreMethods().uploadTweets(
                           _tweetController.text,
                         );
-                        Navigator.pop(context);
                         showSnackBar("Successfully Tweeted", context);
                         _tweetController.clear();
                       },
