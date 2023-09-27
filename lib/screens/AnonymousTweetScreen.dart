@@ -18,7 +18,7 @@ class _TweetScreenState extends State<TweetScreen> {
   String uid = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
-    //  final model.User user = Provider.of<UserProvider>(context).getUser;
+    //final model.User user = Provider.of<UserProvider>(context).getUser;
     CollectionReference Anons =
         FirebaseFirestore.instance.collection('AnonymousTweets');
     //  print("good");

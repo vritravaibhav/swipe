@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/providers/typePro.dart';
+import 'package:instagramclone/screens/Edit_profile_Screen.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
@@ -132,6 +133,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? SizedBox()
                     : IconButton(
                         onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfileScreen()),
+                          );
+                          return;
                           showModalBottomSheet<void>(
                             isScrollControlled: true,
                             // enableDrag: true,
@@ -163,6 +170,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ElevatedButton(
                                             child: const Text(' Save'),
                                             onPressed: () async {
+                                              if (_name.text == "") {
+                                                showSnackBar(
+                                                    "We can't change your name",
+                                                    context);
+                                                return;
+                                              }
                                               await FirebaseFirestore.instance
                                                   .collection('users')
                                                   .doc(userData["uid"])
