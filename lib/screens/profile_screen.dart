@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/providers/typePro.dart';
+
+import 'package:instagramclone/screens/Edit_profile_Screen.dart';
 import 'package:instagramclone/screens/chatScreenPersonal.dart';
+
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
@@ -134,6 +137,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? const SizedBox()
                     : IconButton(
                         onPressed: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => EditProfileScreen()),
+                          // );
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProfileScreen(),
+                            ),
+                          );
+                          return;
+
                           showModalBottomSheet<void>(
                             isScrollControlled: true,
                             // enableDrag: true,
@@ -165,6 +182,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ElevatedButton(
                                             child: const Text(' Save'),
                                             onPressed: () async {
+                                              if (_name.text == "") {
+                                                showSnackBar(
+                                                    "We can't change your name",
+                                                    context);
+                                                return;
+                                              }
                                               await FirebaseFirestore.instance
                                                   .collection('users')
                                                   .doc(userData["uid"])
@@ -230,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           builder: (context) =>
                                                               Container(
                                                             color: const Color
-                                                                .fromARGB(
+                                                                    .fromARGB(
                                                                 255, 255, 2, 2),
                                                             constraints: BoxConstraints(
                                                                 minHeight: MediaQuery.of(
@@ -244,12 +267,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                   width: 50,
                                                                   height: 5,
                                                                   margin: const EdgeInsets
-                                                                      .symmetric(
+                                                                          .symmetric(
                                                                       vertical:
                                                                           10),
                                                                   decoration: BoxDecoration(
                                                                       color: const Color
-                                                                          .fromARGB(
+                                                                              .fromARGB(
                                                                           255,
                                                                           193,
                                                                           142,
@@ -370,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
-                                                                .symmetric(
+                                                                    .symmetric(
                                                                 horizontal: 10,
                                                                 vertical: 10),
                                                         decoration: BoxDecoration(
