@@ -1,18 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/providers/typePro.dart';
+
 import 'package:instagramclone/screens/Edit_profile_Screen.dart';
+import 'package:instagramclone/screens/chatScreenPersonal.dart';
+
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/post_card.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import 'package:instagramclone/models/user.dart' as model;
+
 import '../Resources/auth_methods.dart';
 import '../Resources/firestore_methods.dart';
 import '../utils/colors.dart';
 import '../widget/follow_button.dart';
+import 'chat_list.dart';
 import 'login_screens.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -31,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isFollowing = false;
   bool isLoading = true;
   bool matched = false;
+  List matchedList = [];
   final TextEditingController _name = TextEditingController();
   TextEditingController _bio = TextEditingController();
 
@@ -58,6 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       postLen = postSnap.docs.length;
       userData = userSnap.data()!;
+      matchedList = userSnap['matched'];
       followers = userSnap.data()!['followers'].length;
       following = userSnap.data()!['following'].length;
       isFollowing = userSnap
@@ -102,11 +111,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: Text("Enter your new name"),
+            title: const Text("Enter your new name"),
             children: [
               TextField(
                 controller: _name,
-                decoration: InputDecoration(),
+                decoration: const InputDecoration(),
               )
             ],
           );
@@ -130,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               centerTitle: false,
               actions: [
                 userData["uid"] != FirebaseAuth.instance.currentUser!.uid
-                    ? SizedBox()
+                    ? const SizedBox()
                     : IconButton(
                         onPressed: () {
                           Navigator.push(
@@ -226,41 +235,198 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    // buildStatColumn(postLen, "posts"),
-                                    // buildStatColumn(followers, "followers"),
-                                    // buildStatColumn(following, "following"),
-                                  ],
-                                ),
-                                Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     FirebaseAuth.instance.currentUser!.uid ==
                                             widget.uid
-                                        ? FollowButton(
-                                            text: 'Sign Out',
-                                            backgroundColor:
-                                                mobileBackgroundColor,
-                                            textColor: primaryColor,
-                                            borderColor: Colors.grey,
-                                            function: () async {
-                                              await AuthMethods().signOut();
+                                        ? Row(
+                                            children: [
+                                              matchedList.isNotEmpty
+                                                  ? GestureDetector(
+                                                      onTap: () {
+                                                        showModalBottomSheet(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              Container(
+                                                            color: const Color
+                                                                .fromARGB(
+                                                                255, 255, 2, 2),
+                                                            constraints: BoxConstraints(
+                                                                minHeight: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    0.4),
+                                                            child: Column(
+                                                              children: [
+                                                                Container(
+                                                                  width: 50,
+                                                                  height: 5,
+                                                                  margin: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          10),
+                                                                  decoration: BoxDecoration(
+                                                                      color: const Color
+                                                                          .fromARGB(
+                                                                          255,
+                                                                          193,
+                                                                          142,
+                                                                          159),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20)),
+                                                                ),
+                                                                const Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                10),
+                                                                    child: Text(
+                                                                        'You finally matched with'),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Stack(
+                                                                    children: [
+                                                                      Positioned.fill(
+                                                                          child:
+                                                                              Container()),
+                                                                      Positioned(
+                                                                        right:
+                                                                            0,
+                                                                        child: Lottie.network(
+                                                                            'https://lottie.host/dfacd21c-c989-4589-a69d-2b43b61692f0/0cnbUaJHEo.json',
+                                                                            height:
+                                                                                MediaQuery.of(context).size.height * 0.4),
+                                                                      ),
+                                                                      Column(
+                                                                        children:
+                                                                            List.generate(
+                                                                          matchedList
+                                                                              .length,
+                                                                          (index) {
+                                                                            return FutureBuilder<model.User>(
+                                                                                future: AuthMethods().getUser(matchedList[index]),
+                                                                                builder: (context, snapshot) {
+                                                                                  if (snapshot.hasData) {
+                                                                                    var user = snapshot.data;
+                                                                                    return Container(
+                                                                                      margin: const EdgeInsets.all(10),
+                                                                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                                      decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.amber), borderRadius: BorderRadius.circular(20)),
+                                                                                      child: Column(
+                                                                                        children: [
+                                                                                          Row(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                            children: [
+                                                                                              user!.photoUrl.isNotEmpty
+                                                                                                  ? SizedBox(
+                                                                                                      height: 30,
+                                                                                                      child: ClipOval(child: CachedNetworkImage(imageUrl: user.photoUrl.toString())),
+                                                                                                    )
+                                                                                                  : Container(),
+                                                                                              const SizedBox(
+                                                                                                width: 12,
+                                                                                              ),
+                                                                                              Text(user.username.toString()),
+                                                                                              const Spacer(),
+                                                                                              ElevatedButton(
+                                                                                                  onPressed: () async {
+                                                                                                    String docid = FirebaseAuth.instance.currentUser!.uid.toString() + matchedList[index].toString();
+                                                                                                    final doc = await FirebaseFirestore.instance.collection('chats').doc(docid).get();
 
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginScreen(),
-                                                ),
-                                              );
-                                            },
+                                                                                                    if (doc.exists) {
+                                                                                                      Navigator.push(
+                                                                                                          context,
+                                                                                                          MaterialPageRoute(
+                                                                                                              builder: (context) => ChatPagePersonal(
+                                                                                                                    snap: docid,
+                                                                                                                    user: user,
+                                                                                                                  )));
+                                                                                                    } else {
+                                                                                                      String docid = matchedList[index].toString() + FirebaseAuth.instance.currentUser!.uid.toString();
+
+                                                                                                      Navigator.push(
+                                                                                                          context,
+                                                                                                          MaterialPageRoute(
+                                                                                                              builder: (context) => ChatPagePersonal(
+                                                                                                                    snap: docid,
+                                                                                                                    user: user,
+                                                                                                                  )));
+                                                                                                    }
+                                                                                                  },
+                                                                                                  child: const Text('Chat')),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    );
+                                                                                  }
+                                                                                  return Container();
+                                                                                });
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 10),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            border: Border.all(
+                                                                color: Colors
+                                                                    .red)),
+                                                        child: const Text(
+                                                          'Matched List',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Container(),
+                                              FollowButton(
+                                                text: 'Sign Out',
+                                                backgroundColor:
+                                                    mobileBackgroundColor,
+                                                textColor: primaryColor,
+                                                borderColor: Colors.grey,
+                                                function: () async {
+                                                  await AuthMethods().signOut();
+
+                                                  Navigator.of(context)
+                                                      .pushReplacement(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LoginScreen(),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
                                           )
                                         : matched
-                                            ? FollowButton(
+                                            ? const FollowButton(
                                                 backgroundColor: Colors.grey,
                                                 borderColor: Colors.black,
                                                 text: "Matched",
@@ -388,8 +554,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       context: context,
                                       builder: (context) {
                                         return SimpleDialog(
-                                          insetPadding: EdgeInsets.all(0),
-                                          contentPadding: EdgeInsets.all(0),
+                                          insetPadding: const EdgeInsets.all(0),
+                                          contentPadding:
+                                              const EdgeInsets.all(0),
                                           children: [
                                             PostCard(
                                                 snap: snap,

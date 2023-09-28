@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:instagramclone/Resources/auth_methods.dart';
-import 'package:instagramclone/models/user.dart';
 import 'package:instagramclone/screens/profile_screen.dart';
 import 'package:intl/intl.dart';
 
@@ -30,7 +28,7 @@ class ReceiverRowView extends StatelessWidget {
               );
             },
             child: Padding(
-              padding: EdgeInsets.only(left: 10.0, top: 1.0, bottom: 9.0),
+              padding: const EdgeInsets.only(left: 10.0, top: 1.0, bottom: 9.0),
               child: receiverMessage["photoUrl"] == null
                   ? const CircleAvatar(
                       backgroundColor: Color(0xFF90C953),
@@ -39,7 +37,7 @@ class ReceiverRowView extends StatelessWidget {
                             color: Colors.black,
                           )))
                   : CircleAvatar(
-                      backgroundColor: Color(0xFF90C953),
+                      backgroundColor: const Color(0xFF90C953),
                       foregroundImage:
                           NetworkImage(receiverMessage["photoUrl"]),
                     ),
@@ -75,10 +73,21 @@ class ReceiverRowView extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 10.0, bottom: 8.0),
                 child: Text(
-                  DateFormat.jm().format(receiverMessage["datetime"].toDate()),
+                  DateTime.now().weekday ==
+                          receiverMessage["datetime"].toDate().weekday
+                      ? DateFormat.jm()
+                          .format(receiverMessage["datetime"].toDate())
+                          .toString()
+                      : DateFormat('dd/MM/yy')
+                              .format(receiverMessage["datetime"].toDate())
+                              .toString() +
+                          ", " +
+                          DateFormat.jm()
+                              .format(receiverMessage["datetime"].toDate())
+                              .toString(),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 7.0,
+                    fontSize: 8.0,
                   ),
                 ),
               ),

@@ -2,11 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/auth_methods.dart';
-import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/widget/receiver_row_view.dart';
 import 'package:instagramclone/widget/sender_row_view.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../models/user.dart' as model;
 
@@ -33,8 +30,6 @@ class _ChatPageState extends State<ChatPage> {
   bool goodies = true;
   bool userAccess = false;
   model.User? user;
-
- 
 
   Future<void> vaibhav() async {
     // });
@@ -75,7 +70,7 @@ class _ChatPageState extends State<ChatPage> {
     _messageController.clear();
   }
 
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     //  var m = Provider.of<TypeProvdier>(context).messages;
@@ -98,13 +93,13 @@ class _ChatPageState extends State<ChatPage> {
     goodies = true;
 
     if (!isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Chat App'),
+          title: const Text('Chat'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -133,14 +128,14 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: TextField(
                         controller: _messageController,
                         maxLines: null,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Type a message...',
                         ),
                       ),
@@ -148,7 +143,7 @@ class _ChatPageState extends State<ChatPage> {
                     //
 
                     IconButton(
-                      icon: Icon(Icons.send),
+                      icon: const Icon(Icons.send),
                       onPressed: () {
                         if (_messageController.text.isNotEmpty) {
                           sendMessage();

@@ -9,12 +9,13 @@ import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/responsive/responsive_layout_screen.dart';
 import 'package:instagramclone/responsive/web_screen_layout.dart';
 import 'package:instagramclone/screens/login_screens.dart';
-import 'package:instagramclone/screens/signup_screen.dart';
+import 'package:instagramclone/screens/onboarding.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PostProvider()),
       ],
       child: MaterialApp(
-        title: 'Instagram clone',
+        title: 'Swipe',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark()
             .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.hasData) {
-                  //  Provider.of<UserProvider>(context).refreshUser();
+
                   return const ResponsiveLayout(
                       WebScreenLayout: WebScreenLayout(),
                       MobileScreenLayout: MobileScreenLayout());
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               }
-              return LoginScreen();
+              return const OnBoardingScreen();
             }),
       ),
     );
