@@ -66,6 +66,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 IconButton(
                   icon: Icon(Icons.check),
                   onPressed: () async {
+                    if (_bioController.text == "" ||
+                        _nameController.text == "") {
+                      showSnackBar("Please fill some value", context);
+                      return;
+                    }
                     isloading = false;
                     setState(() {});
                     if (_image == null) {
@@ -89,7 +94,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       });
                     }
 
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (context) => ProfileScreen(uid: uid,),
+  ),
+);
                   },
                 ),
               ],

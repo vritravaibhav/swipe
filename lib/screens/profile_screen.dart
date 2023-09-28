@@ -142,12 +142,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? const SizedBox()
                     : IconButton(
                         onPressed: () {
-                          Navigator.push(
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => EditProfileScreen()),
+                          // );
+
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditProfileScreen()),
+                              builder: (context) => EditProfileScreen(),
+                            ),
                           );
                           return;
+
                           showModalBottomSheet<void>(
                             isScrollControlled: true,
                             // enableDrag: true,
@@ -250,7 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           builder: (context) =>
                                                               Container(
                                                             color: const Color
-                                                                .fromARGB(
+                                                                    .fromARGB(
                                                                 255, 255, 2, 2),
                                                             constraints: BoxConstraints(
                                                                 minHeight: MediaQuery.of(
@@ -264,12 +272,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                   width: 50,
                                                                   height: 5,
                                                                   margin: const EdgeInsets
-                                                                      .symmetric(
+                                                                          .symmetric(
                                                                       vertical:
                                                                           10),
                                                                   decoration: BoxDecoration(
                                                                       color: const Color
-                                                                          .fromARGB(
+                                                                              .fromARGB(
                                                                           255,
                                                                           193,
                                                                           142,
@@ -385,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
-                                                                .symmetric(
+                                                                    .symmetric(
                                                                 horizontal: 10,
                                                                 vertical: 10),
                                                         decoration: BoxDecoration(
