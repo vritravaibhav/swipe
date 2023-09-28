@@ -75,10 +75,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
-
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   onSend(BuildContext context) {
@@ -86,21 +87,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: const Text("Yo!!!!!!!"),
             children: [
-              Lottie.network(
-                  'https://raw.githubusercontent.com/xvrh/lottie-flutter/master/example/assets/Mobilo/A.json'),
-              // SimpleDialogOption(
-              //   padding: const EdgeInsets.all(20),
-              //   child: const Text('Cancel'),
-              //   onPressed: () async {
-              //     Navigator.of(context).pop();
-              //   },
-              // )
+              Text('IT\'s A MATCH', style: TextStyle(color: Colors.blue),),
             ],
           );
         });
-  }
+  }   
 
   editname(BuildContext context) {
     //
@@ -128,6 +120,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
+            floatingActionButton: FloatingActionButton(onPressed: () {
+              onSend(context);
+            }),
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               title: Text(
@@ -314,7 +309,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                                               user!.photoUrl.isNotEmpty
                                                                                                   ? SizedBox(
                                                                                                       height: 30,
-                                                                                                      child: ClipOval(child: CachedNetworkImage(imageUrl: user.photoUrl.toString())),
+                                                                                                      width: 30,
+                                                                                                      child: ClipOval(
+                                                                                                          child: CachedNetworkImage(
+                                                                                                        imageUrl: user.photoUrl.toString(),
+                                                                                                        fit: BoxFit.cover,
+                                                                                                      )),
                                                                                                     )
                                                                                                   : Container(),
                                                                                               const SizedBox(
