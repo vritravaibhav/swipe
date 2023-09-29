@@ -35,8 +35,8 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     super.initState();
-    // getUsers(widget.snap);
-    // getComments();
+    //getUsers(widget.snap);
+    getComments();
 
     // print(widget.snap);
   }
@@ -117,11 +117,9 @@ class _PostCardState extends State<PostCard> {
                                   imageUrl:
                                       'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
                               : CachedNetworkImage(
-
                                   fit: BoxFit.cover,
                                   imageUrl: widget.snap['profImage'].toString())
                           : const Icon(Icons.person),
-
                     ),
                   ),
                   Expanded(
