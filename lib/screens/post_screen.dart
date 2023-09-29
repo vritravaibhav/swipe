@@ -1,20 +1,14 @@
-//import 'dart:ffi';
 import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as model;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
-import 'package:instagramclone/providers/UserProvider.dart';
 import 'package:instagramclone/providers/post_provider.dart';
 import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/screens/final_post_screen.dart';
-import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-import '../models/user.dart';
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -26,8 +20,6 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
   bool isLoading = false;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final model.FirebaseAuth _auth = model.FirebaseAuth.instance;
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _tweetController = TextEditingController();
 
@@ -314,7 +306,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           padding:
                               EdgeInsets.only(top: 20, left: 18, bottom: 20),
                           child: Text(
-                            'Anonymous Tweet',
+                            'Anonymous Chirp',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
@@ -326,7 +318,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               FirestoreMethods().uploadTweets(
                                 _tweetController.text,
                               );
-                              showSnackBar("Successfully Tweeted", context);
+                              showSnackBar("Successfully Chirped", context);
                               _tweetController.clear();
                             },
                             child: const Text('Post >'),
@@ -419,7 +411,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 15),
                           child: Text(
-                            'Anonymous Tweet',
+                            'Anonymous Chirp',
                             style:
                                 context.watch<PostProvider>().selectedPage == 1
                                     ? const TextStyle(

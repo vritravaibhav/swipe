@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/Resources/firestore_methods.dart';
 
-import '../models/user.dart' as model;
+// import '../models/user.dart' as model;
 
 class TweetScreen extends StatefulWidget {
   const TweetScreen({super.key});

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/screens/login_screens.dart';
-import 'package:instagramclone/screens/signup_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

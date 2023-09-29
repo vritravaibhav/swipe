@@ -82,7 +82,7 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
     _messageController.clear();
   }
 
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     if (goodies) {
@@ -91,7 +91,7 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
           .doc(widget.snap)
           .snapshots()
           .listen((event) {
-        print("loove");
+        // print("loove");
         vaibhav();
       });
     }
