@@ -57,7 +57,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'Discover connections naturally: Send like in secret, and when fate aligns, unveil mutual interest',
+                'Discover connections naturally: Send date in secret, and when fate aligns, unveil mutual interest',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color.fromARGB(255, 93, 90, 90),

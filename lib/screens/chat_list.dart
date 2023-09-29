@@ -35,12 +35,12 @@ class _ChatListState extends State<ChatList> {
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           ListTile(
-            leading: CircleAvatar(
+            leading: const CircleAvatar(
               backgroundColor: Colors.blueGrey,
               child: Text("G.C."), // Display the first letter of the name
             ),
-            title: Text("Global Chat"),
-            subtitle: Text(""),
+            title: const Text("Global Chat"),
+            subtitle: const Text(""),
             onTap: () {
               Navigator.push(
                 context,
@@ -53,11 +53,11 @@ class _ChatListState extends State<ChatList> {
           //   thickness: 0.1,
           // ),
           ListTile(
-            leading: CircleAvatar(
+            leading: const CircleAvatar(
               backgroundColor: Colors.blueGrey,
               child: Text("D"), // Display the first letter of the name
             ),
-            title: Text("Developer"),
+            title: const Text("Developer"),
             subtitle: Text(""),
             onTap: () {
               print("good");
@@ -75,11 +75,11 @@ class _ChatListState extends State<ChatList> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
-                return Text('Something went wrong');
+                return const Text('Something went wrong');
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }

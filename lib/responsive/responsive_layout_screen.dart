@@ -4,11 +4,11 @@ import 'package:instagramclone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
 
 class ResponsiveLayout extends StatefulWidget {
-  final Widget WebScreenLayout;
-  final Widget MobileScreenLayout;
+  final Widget webScreenLayout;
+  final Widget mobileScreenLayout;
   const ResponsiveLayout(
-      {required this.WebScreenLayout,
-      required this.MobileScreenLayout,
+      {required this.webScreenLayout,
+      required this.mobileScreenLayout,
       super.key});
 
   @override
@@ -18,19 +18,18 @@ class ResponsiveLayout extends StatefulWidget {
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     addData();
   }
 
   bool userdata = false;
   addData() async {
-    UserProvider _userprovider = Provider.of(context, listen: false);
-    await _userprovider.refreshUser();
+    UserProvider userprovider = Provider.of(context, listen: false);
+    userprovider.refreshUser();
     userdata = true;
-    if (mounted) {
-      setState(() {});
-    }
+    // if (mounted) {
+    //   setState(() {});
+    // }
   }
 
   @override
@@ -39,10 +38,10 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
       return LayoutBuilder(builder: ((context, constraints) {
         if (constraints.maxWidth > webScreenSize) {
           //web screen
-          return widget.WebScreenLayout;
+          return widget.webScreenLayout;
         }
         //Mobile  screen
-        return widget.MobileScreenLayout;
+        return widget.mobileScreenLayout;
       }));
     } else {
       return const Center(
