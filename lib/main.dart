@@ -8,7 +8,6 @@ import 'package:instagramclone/providers/typePro.dart';
 import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/responsive/responsive_layout_screen.dart';
 import 'package:instagramclone/responsive/web_screen_layout.dart';
-import 'package:instagramclone/screens/login_screens.dart';
 import 'package:instagramclone/screens/onboarding.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:provider/provider.dart';
@@ -51,10 +50,9 @@ class MyApp extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.hasData) {
-
                   return const ResponsiveLayout(
-                      WebScreenLayout: WebScreenLayout(),
-                      MobileScreenLayout: MobileScreenLayout());
+                      webScreenLayout: WebScreenLayout(),
+                      mobileScreenLayout: MobileScreenLayout());
                 } else if (snapshot.hasError) {
                   return Center(
                     child: Text('${snapshot.error}'),

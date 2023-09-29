@@ -78,13 +78,7 @@ class ReceiverRowView extends StatelessWidget {
                       ? DateFormat.jm()
                           .format(receiverMessage["datetime"].toDate())
                           .toString()
-                      : DateFormat('dd/MM/yy')
-                              .format(receiverMessage["datetime"].toDate())
-                              .toString() +
-                          ", " +
-                          DateFormat.jm()
-                              .format(receiverMessage["datetime"].toDate())
-                              .toString(),
+                      : "${DateFormat('dd/MM/yy').format(receiverMessage["datetime"].toDate())}, ${DateFormat.jm().format(receiverMessage["datetime"].toDate())}",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 8.0,

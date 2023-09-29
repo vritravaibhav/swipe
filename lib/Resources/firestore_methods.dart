@@ -5,11 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instagramclone/Resources/storage_methods.dart';
 import 'package:instagramclone/models/post.dart';
 import 'package:instagramclone/models/tweet.dart';
-import 'package:instagramclone/utils/utils.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
-import '../providers/typePro.dart';
 
 class FirestoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -91,10 +87,10 @@ class FirestoreMethods {
           'datePublished': DateTime.now()
         });
       } else {
-        print('text is empty');
+        // print('text is empty');
       }
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
       res = e.toString();
     }
     return res;
@@ -104,7 +100,7 @@ class FirestoreMethods {
     try {
       await _firestore.collection('posts').doc(postId).delete();
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
   }
 
@@ -133,8 +129,8 @@ class FirestoreMethods {
         await _firestore.collection('users').doc(uid).update({
           'following': FieldValue.arrayUnion([followId])
         });
-        print(followId);
-        print(likedBy[0]);
+        // print(followId);
+        // print(likedBy[0]);
         if (likedBy.contains(followId)) {
           await FirebaseFirestore.instance
               .collection("chats")
@@ -169,7 +165,7 @@ class FirestoreMethods {
 
       return false;
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
       return false;
     }
   }
@@ -188,7 +184,7 @@ class FirestoreMethods {
     try {
       await _firestore.collection("AnonymousTweets").doc(docId).set(t.toJson());
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
   }
 

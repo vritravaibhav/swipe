@@ -80,12 +80,12 @@ class _PostCardState extends State<PostCard> {
 
     if (!callGetUser) {
       getUsers(widget.snap);
-      print("called");
+      // print("called");
       callGetUser = true;
     }
 
     return Container(
-      color: !widget.anon ? mobileBackgroundColor : Colors.brown,
+      color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
@@ -110,7 +110,7 @@ class _PostCardState extends State<PostCard> {
                     child: SizedBox(
                       height: 32,
                       width: 32,
-                      child: widget.snap['profImage'].toString().isNotEmpty
+                      child: user1.photoUrl.isNotEmpty
                           ? widget.anon
                               ? CachedNetworkImage(
                                   fit: BoxFit.cover,
@@ -118,7 +118,7 @@ class _PostCardState extends State<PostCard> {
                                       'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
                               : CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  imageUrl: widget.snap['profImage'].toString())
+                                  imageUrl: user1.photoUrl.toString())
                           : const Icon(Icons.person),
                     ),
                   ),
@@ -129,13 +129,13 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child: Text(
                       widget.anon ? "Anonymous" : user1.username,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   )),
                   widget.anon
-                      ? SizedBox()
+                      ? const SizedBox()
                       : user.uid == widget.snap["uid"]
                           ? IconButton(
                               onPressed: () {
@@ -164,7 +164,7 @@ class _PostCardState extends State<PostCard> {
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .symmetric(
+                                                                .symmetric(
                                                                 vertical: 12,
                                                                 horizontal: 16),
                                                         child: Text(e),
@@ -174,8 +174,8 @@ class _PostCardState extends State<PostCard> {
                                           ),
                                         ));
                               },
-                              icon: Icon(Icons.more_vert))
-                          : SizedBox()
+                              icon: const Icon(Icons.more_vert))
+                          : const SizedBox()
                 ],
               ),
             ),
@@ -270,7 +270,7 @@ class _PostCardState extends State<PostCard> {
                   DefaultTextStyle(
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle2!
+                        .headlineSmall!
                         .copyWith(fontWeight: FontWeight.w800),
                     child: Text(
                       '${widget.snap['likes'].length} likes',

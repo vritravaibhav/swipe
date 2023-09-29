@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagramclone/Resources/auth_methods.dart';
 import 'package:instagramclone/responsive/responsive_layout_screen.dart';
@@ -37,7 +36,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -72,8 +70,8 @@ class _SignupScreenState extends State<SignupScreen> {
     } else {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const ResponsiveLayout(
-          WebScreenLayout: WebScreenLayout(),
-          MobileScreenLayout: MobileScreenLayout(),
+          webScreenLayout: WebScreenLayout(),
+          mobileScreenLayout: MobileScreenLayout(),
         ),
       ));
     }
@@ -101,10 +99,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   //text field for input and all things
                   children: [
                     const Spacer(),
-                    SvgPicture.asset(
-                      'assets/ic_instagram.svg',
-                      color: primaryColor,
-                      height: 64,
+                    Image.asset(
+                      'assets/swipe.png',
+                      height: 70,
                     ),
                     const Spacer(),
                     //Circular widget to show our selected files

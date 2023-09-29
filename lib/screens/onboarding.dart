@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/screens/login_screens.dart';
-import 'package:instagramclone/screens/signup_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -57,7 +55,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'Discover connections naturally: Send like in secret, and when fate aligns, unveil mutual interest',
+                'Discover connections naturally: Send date in secret, and when fate aligns, unveil mutual interest',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color.fromARGB(255, 93, 90, 90),

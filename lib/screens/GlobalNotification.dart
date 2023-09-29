@@ -13,16 +13,16 @@ class GlobalNotification extends StatelessWidget {
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return const Text('Something went wrong');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return const Text("Loading");
         }
 
         return Scaffold(
           appBar: AppBar(
-            title: Text("Global Notifications"),
+            title: const Text("Global Notifications"),
           ),
           body: ListView(
             shrinkWrap: true,
@@ -40,7 +40,7 @@ class GlobalNotification extends StatelessWidget {
                     // height: 100,
                     child: CachedNetworkImage(imageUrl: data["image"]),
                   ),
-                  Divider()
+                  const Divider()
                 ],
               );
             }).toList(),
