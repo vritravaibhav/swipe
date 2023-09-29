@@ -1,15 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:instagramclone/Resources/auth_methods.dart';
-import 'package:instagramclone/providers/typePro.dart';
-import 'package:instagramclone/screens/chatScreenPersonal.dart';
 import 'package:instagramclone/screens/chat_screen.dart';
 import 'package:instagramclone/widget/chat_tile.dart';
-import 'package:provider/provider.dart';
 
-import '../models/user.dart' as Model;
-import '../providers/UserProvider.dart';
+// import '../models/user.dart' as Model;
 
 class ChatList extends StatefulWidget {
   const ChatList({super.key});
@@ -28,8 +23,8 @@ class _ChatListState extends State<ChatList> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back)),
-        title: Text("Chat"),
+            icon: const Icon(Icons.arrow_back)),
+        title: const Text("Chat"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -58,9 +53,9 @@ class _ChatListState extends State<ChatList> {
               child: Text("D"), // Display the first letter of the name
             ),
             title: const Text("Developer"),
-            subtitle: Text(""),
+            subtitle: const Text(""),
             onTap: () {
-              print("good");
+              // print("good");
               //  sauravs();
               // Navigate to the chat page for this user
               // You can implement this navigation as needed
@@ -83,7 +78,7 @@ class _ChatListState extends State<ChatList> {
                   child: CircularProgressIndicator(),
                 );
               }
-              final flag = Provider.of<TypeProvdier>(context);
+              // final flag = Provider.of<TypeProvdier>(context);
               return ListView(
                 shrinkWrap: true,
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:instagramclone/screens/AnonFeedScreen.dart';
 import 'package:instagramclone/screens/AnonymousTweetScreen.dart';
 import 'package:instagramclone/screens/chat_list.dart';
@@ -35,7 +34,7 @@ class FeedScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ChatList()),
+                    MaterialPageRoute(builder: (context) => const ChatList()),
                   );
                 },
                 icon: const Icon(

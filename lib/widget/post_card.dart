@@ -80,7 +80,7 @@ class _PostCardState extends State<PostCard> {
 
     if (!callGetUser) {
       getUsers(widget.snap);
-      print("called");
+      // print("called");
       callGetUser = true;
     }
 
@@ -129,13 +129,13 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child: Text(
                       widget.anon ? "Anonymous" : user1.username,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   )),
                   widget.anon
-                      ? SizedBox()
+                      ? const SizedBox()
                       : user.uid == widget.snap["uid"]
                           ? IconButton(
                               onPressed: () {
@@ -174,8 +174,8 @@ class _PostCardState extends State<PostCard> {
                                           ),
                                         ));
                               },
-                              icon: Icon(Icons.more_vert))
-                          : SizedBox()
+                              icon: const Icon(Icons.more_vert))
+                          : const SizedBox()
                 ],
               ),
             ),
@@ -270,7 +270,7 @@ class _PostCardState extends State<PostCard> {
                   DefaultTextStyle(
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle2!
+                        .headlineSmall!
                         .copyWith(fontWeight: FontWeight.w800),
                     child: Text(
                       '${widget.snap['likes'].length} likes',

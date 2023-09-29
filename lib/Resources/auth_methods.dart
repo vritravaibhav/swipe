@@ -140,8 +140,6 @@ class AuthMethods {
       }
     });
 
-    try {} catch (e) {}
-
     return "good";
   }
 }

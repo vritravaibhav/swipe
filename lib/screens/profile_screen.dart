@@ -3,9 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:instagramclone/providers/UserProvider.dart';
 import 'package:instagramclone/providers/typePro.dart';
 
 import 'package:instagramclone/screens/Edit_profile_Screen.dart';
@@ -22,7 +20,6 @@ import '../Resources/auth_methods.dart';
 import '../Resources/firestore_methods.dart';
 import '../utils/colors.dart';
 import '../widget/follow_button.dart';
-import 'chat_list.dart';
 import 'login_screens.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -43,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool matched = false;
   List matchedList = [];
   final TextEditingController _name = TextEditingController();
-  TextEditingController _bio = TextEditingController();
+  // TextEditingController _bio = TextEditingController();
 
   @override
   void initState() {
@@ -185,11 +182,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                onSend(context);
-              },
-            ),
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               title: Text(
@@ -210,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditProfileScreen(),
+                              builder: (context) => const EditProfileScreen(),
                             ),
                           );
                           // return;
