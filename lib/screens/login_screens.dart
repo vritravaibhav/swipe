@@ -38,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (res == 'success') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const ResponsiveLayout(
-          WebScreenLayout: WebScreenLayout(),
-          MobileScreenLayout: MobileScreenLayout(),
+          webScreenLayout: WebScreenLayout(),
+          mobileScreenLayout: MobileScreenLayout(),
         ),
       ));
     } else {
@@ -51,8 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
     await AuthMethods().signInWithGoogle();
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => const ResponsiveLayout(
-        WebScreenLayout: WebScreenLayout(),
-        MobileScreenLayout: MobileScreenLayout(),
+        webScreenLayout: WebScreenLayout(),
+        mobileScreenLayout: MobileScreenLayout(),
       ),
     ));
   }
@@ -75,11 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
             flex: 2,
           ),
           //text field for input and all things
-          SvgPicture.asset(
-            'assets/ic_instagram.svg',
-            color: primaryColor,
-            height: 64,
-          ),
+          Image.asset('assets/swipe.png', height: 70),
           const SizedBox(
             height: 64,
           ),

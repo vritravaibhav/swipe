@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/providers/UserProvider.dart';
 import 'package:instagramclone/providers/typePro.dart';
 
 import 'package:instagramclone/screens/Edit_profile_Screen.dart';
@@ -90,12 +93,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (context) {
           return SimpleDialog(
+            backgroundColor: Colors.transparent,
             children: [
-              Text('IT\'s A MATCH', style: TextStyle(color: Colors.blue),),
+              Column(
+                children: [
+                  const Text(
+                    'YOO!! IT\'S A MATCH!',
+                    style: TextStyle(
+                        color: Colors.amber,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Lottie.network(
+                      'https://lottie.host/fa1eae8f-ae1f-478c-ab79-0218d23aa3c5/sZ6qeyBkFg.json',
+                      height: 200),
+                  GestureDetector(
+                    onTap: () async {
+                      String docid =
+                          FirebaseAuth.instance.currentUser!.uid.toString() +
+                              widget.uid.toString();
+                      final doc = await FirebaseFirestore.instance
+                          .collection('chats')
+                          .doc(docid)
+                          .get();
+
+                      model.User user =
+                          model.User.fromMap(userData as Map<String, dynamic>);
+                      if (doc.exists) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatPagePersonal(
+                                      snap: docid,
+                                      user: user,
+                                    )));
+                      } else {
+                        String docid = widget.uid.toString() +
+                            FirebaseAuth.instance.currentUser!.uid.toString();
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatPagePersonal(
+                                      snap: docid,
+                                      user: user,
+                                    )));
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 7),
+                      decoration: BoxDecoration(
+                          color: Colors.purple,
+                          borderRadius: BorderRadius.circular(14)),
+                      child: const Text(
+                        'See the message',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ],
           );
         });
-  }   
+  }
 
   editname(BuildContext context) {
     //
@@ -123,9 +185,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            floatingActionButton: FloatingActionButton(onPressed: () {
-              onSend(context);
-            }),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                onSend(context);
+              },
+            ),
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               title: Text(
@@ -143,71 +207,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           //       builder: (context) => EditProfileScreen()),
                           // );
 
-                          Navigator.pushReplacement(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => EditProfileScreen(),
                             ),
                           );
-                          return;
-
-                          showModalBottomSheet<void>(
-                            isScrollControlled: true,
-                            // enableDrag: true,
-
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                child: SizedBox(
-                                  height: 200,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          TextField(
-                                            decoration: InputDecoration(
-                                              hintText: "Enter Your Name",
-                                            ),
-                                            controller: _name,
-                                            autofocus: true,
-                                          ),
-                                          ElevatedButton(
-                                            child: const Text(' Save'),
-                                            onPressed: () async {
-                                              if (_name.text == "") {
-                                                showSnackBar(
-                                                    "We can't change your name",
-                                                    context);
-                                                return;
-                                              }
-                                              await FirebaseFirestore.instance
-                                                  .collection('users')
-                                                  .doc(userData["uid"])
-                                                  .update(
-                                                      {"username": _name.text});
-                                              Navigator.pop(context);
-                                              await getData();
-                                              x.hearing();
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
+                          // return;
                         },
-                        icon: Icon(Icons.edit))
+                        icon: const Icon(Icons.edit))
               ],
             ),
             body: ListView(
@@ -250,11 +258,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       onTap: () {
                                                         showModalBottomSheet(
                                                           context: context,
+                                                          backgroundColor:
+                                                              Colors.red,
                                                           builder: (context) =>
                                                               Container(
-                                                            color: const Color
-                                                                    .fromARGB(
-                                                                255, 255, 2, 2),
+                                                            color: Colors
+                                                                .transparent,
                                                             constraints: BoxConstraints(
                                                                 minHeight: MediaQuery.of(
                                                                             context)
@@ -267,12 +276,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                   width: 50,
                                                                   height: 5,
                                                                   margin: const EdgeInsets
-                                                                          .symmetric(
+                                                                      .symmetric(
                                                                       vertical:
                                                                           10),
                                                                   decoration: BoxDecoration(
                                                                       color: const Color
-                                                                              .fromARGB(
+                                                                          .fromARGB(
                                                                           255,
                                                                           193,
                                                                           142,
@@ -292,7 +301,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                             left:
                                                                                 10),
                                                                     child: Text(
-                                                                        'You finally matched with'),
+                                                                      'You finally matched with',
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          fontSize:
+                                                                              20,
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 Expanded(
@@ -345,32 +362,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                                               ),
                                                                                               Text(user.username.toString()),
                                                                                               const Spacer(),
-                                                                                              ElevatedButton(
-                                                                                                  onPressed: () async {
-                                                                                                    String docid = FirebaseAuth.instance.currentUser!.uid.toString() + matchedList[index].toString();
-                                                                                                    final doc = await FirebaseFirestore.instance.collection('chats').doc(docid).get();
+                                                                                              InkWell(
+                                                                                                onTap: () async {
+                                                                                                  String docid = FirebaseAuth.instance.currentUser!.uid.toString() + matchedList[index].toString();
+                                                                                                  final doc = await FirebaseFirestore.instance.collection('chats').doc(docid).get();
 
-                                                                                                    if (doc.exists) {
-                                                                                                      Navigator.push(
-                                                                                                          context,
-                                                                                                          MaterialPageRoute(
-                                                                                                              builder: (context) => ChatPagePersonal(
-                                                                                                                    snap: docid,
-                                                                                                                    user: user,
-                                                                                                                  )));
-                                                                                                    } else {
-                                                                                                      String docid = matchedList[index].toString() + FirebaseAuth.instance.currentUser!.uid.toString();
+                                                                                                  if (doc.exists) {
+                                                                                                    Navigator.push(
+                                                                                                        context,
+                                                                                                        MaterialPageRoute(
+                                                                                                            builder: (context) => ChatPagePersonal(
+                                                                                                                  snap: docid,
+                                                                                                                  user: user,
+                                                                                                                )));
+                                                                                                  } else {
+                                                                                                    String docid = matchedList[index].toString() + FirebaseAuth.instance.currentUser!.uid.toString();
 
-                                                                                                      Navigator.push(
-                                                                                                          context,
-                                                                                                          MaterialPageRoute(
-                                                                                                              builder: (context) => ChatPagePersonal(
-                                                                                                                    snap: docid,
-                                                                                                                    user: user,
-                                                                                                                  )));
-                                                                                                    }
-                                                                                                  },
-                                                                                                  child: const Text('Chat')),
+                                                                                                    Navigator.push(
+                                                                                                        context,
+                                                                                                        MaterialPageRoute(
+                                                                                                            builder: (context) => ChatPagePersonal(
+                                                                                                                  snap: docid,
+                                                                                                                  user: user,
+                                                                                                                )));
+                                                                                                  }
+                                                                                                },
+                                                                                                child: Container(
+                                                                                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    color: Colors.purple,
+                                                                                                    borderRadius: BorderRadius.circular(15),
+                                                                                                  ),
+                                                                                                  child: const Text(
+                                                                                                    'Chat',
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
                                                                                             ],
                                                                                           ),
                                                                                         ],
@@ -393,7 +420,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .symmetric(
+                                                                .symmetric(
                                                                 horizontal: 10,
                                                                 vertical: 10),
                                                         decoration: BoxDecoration(

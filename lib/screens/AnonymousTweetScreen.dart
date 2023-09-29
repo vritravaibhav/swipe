@@ -17,12 +17,12 @@ class _TweetScreenState extends State<TweetScreen> {
   @override
   Widget build(BuildContext context) {
     //final model.User user = Provider.of<UserProvider>(context).getUser;
-    CollectionReference Anons =
+    CollectionReference anons =
         FirebaseFirestore.instance.collection('AnonymousTweets');
     //  print("good");
 
     return StreamBuilder<QuerySnapshot>(
-      stream: Anons.orderBy('datePublished', descending: true).snapshots(),
+      stream: anons.orderBy('datePublished', descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Text('Something went wrong');

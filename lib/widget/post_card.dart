@@ -85,7 +85,7 @@ class _PostCardState extends State<PostCard> {
     }
 
     return Container(
-      color: !widget.anon ? mobileBackgroundColor : Colors.brown,
+      color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
@@ -110,18 +110,16 @@ class _PostCardState extends State<PostCard> {
                     child: SizedBox(
                       height: 32,
                       width: 32,
-                      child: widget.snap['profImage'].toString().isNotEmpty
+                      child: user1.photoUrl.isNotEmpty
                           ? widget.anon
                               ? CachedNetworkImage(
                                   fit: BoxFit.cover,
                                   imageUrl:
                                       'https://firebasestorage.googleapis.com/v0/b/instagram-clone-6c92f.appspot.com/o/profilePics%2Fanonymousman.jpg?alt=media&token=fcef4a28-5a48-4140-9fb5-6e0da7f0122b')
                               : CachedNetworkImage(
-
                                   fit: BoxFit.cover,
-                                  imageUrl: widget.snap['profImage'].toString())
+                                  imageUrl: user1.photoUrl.toString())
                           : const Icon(Icons.person),
-
                     ),
                   ),
                   Expanded(
@@ -166,7 +164,7 @@ class _PostCardState extends State<PostCard> {
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .symmetric(
+                                                                .symmetric(
                                                                 vertical: 12,
                                                                 horizontal: 16),
                                                         child: Text(e),

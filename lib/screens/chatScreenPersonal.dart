@@ -12,7 +12,7 @@ import '../models/user.dart' as model;
 class ChatPagePersonal extends StatefulWidget {
   List<dynamic>? messages = [];
   final snap;
-  final user;
+  final model.User user;
 
   ChatPagePersonal({
     Key? key,
@@ -103,7 +103,7 @@ class _ChatPagePersonalState extends State<ChatPagePersonal> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: Text(user!.username)),
+        appBar: AppBar(title: Text(widget.user.username)),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
@@ -45,6 +47,19 @@ class User {
       followers: snapshot['followers'],
       following: snapshot['following'],
       matched: snapshot['matched'],
+    );
+  }
+
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+      email: map['email'] ?? '',
+      uid: map['uid'] ?? '',
+      photoUrl: map['photoUrl'] ?? '',
+      username: map['username'] ?? '',
+      bio: map['bio'] ?? '',
+      followers: List.from(map['followers']),
+      following: List.from(map['following']),
+      matched: List.from(map['matched']),
     );
   }
 }

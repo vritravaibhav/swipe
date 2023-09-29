@@ -21,15 +21,14 @@ class FeedScreen extends StatelessWidget {
           centerTitle: false,
           bottom: const TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.directions_car)),
-              Tab(icon: Icon(Icons.baby_changing_station)),
-              Tab(icon: Icon(Icons.directions_bike)),
+              Tab(text: 'Feed'),
+              Tab(text: 'Chirp'),
+              Tab(text: 'Anon Feed'),
             ],
           ),
-          title: SvgPicture.asset(
-            'assets/ic_instagram.svg',
-            height: 32,
-            color: primaryColor,
+          title: Image.asset(
+            'assets/swipe.png',
+            height: 30,
           ),
           actions: [
             IconButton(
